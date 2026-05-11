@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">GymRats</string>
+    <string name="gymrats_logo">GymRats Logo</string>
+
+    <!--  LoginScreen  -->
+    <string name="login">Iniciar Sesión</string>
+    <string name="username_or_email">Usuario o Correo</string>
+    <string name="password">Contraseña</string>
+    <string name="toggle_password_visibility">Ver u ocultar contraseña</string>
+    <string name="dont_have_account">Si no tienes cuenta, crea una</string>
+    <string name="here">aquí</string>
+
+    <!--  SignupScreen  -->
+    <string name="back_to_login">Volver a iniciar sesión</string>
+    <string name="create_account">Crear Cuenta</string>
+    <string name="email">Correo electrónico</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="repeat_password">Repetir contraseña</string>
+    <string name="password_dont_match">Las contraseñas no son iguales</string>
+    <string name="register">Registrarse</string>
 </resources>
