@@ -70,4 +70,7 @@ dependencies {
 
     // Converter GSON: Para que Retrofit convierta el JSON de FastAPI a clases de Kotlin automáticamente
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // DataStore para persistencia de datos
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }

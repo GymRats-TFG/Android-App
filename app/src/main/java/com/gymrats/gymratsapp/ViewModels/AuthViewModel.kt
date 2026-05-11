@@ -1,20 +1,19 @@
 package com.gymrats.gymratsapp.ViewModels
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.SignupRequest
 import com.gymrats.gymratsapp.remote.RetrofitClient
 import kotlinx.coroutines.launch
 
-// Creamos una única instancia para toda la aplicación y asi evitamos errores
-object AuthContainer {
-    val authViewModel = AuthViewModel()
-}
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(application: Application) : AndroidViewModel(application) {
+    private val sessionManager = SessionManager(application)
 
     var errorMessage by mutableStateOf<String?>(null)
         private set
@@ -24,13 +23,18 @@ class AuthViewModel : ViewModel() {
 
     fun ejecutarLogin(email: String, pass: String) {
         success = false
+        errorMessage = null
         viewModelScope.launch {
             try {
                 // Llamamos directamente con los parámetros @Field
                 val response = RetrofitClient.instance.login(email, pass)
 
                 if (response.isSuccessful) {
-                    success = true
+                    val token = response.body()?.access_token
+                    token?.let {
+                        sessionManager.saveToken(it) // <--- GUARDAMOS EL TOKEN
+                        success = true
+                    }
                 } else {
                     errorMessage = "Error en login: ${response.code()} - ${response.errorBody()?.string()}"
                 }
@@ -42,6 +46,7 @@ class AuthViewModel : ViewModel() {
 
     fun ejecutarSignup(email: String, username: String, pass: String, isEnterprise: Boolean) {
         success = false
+        errorMessage = null
         viewModelScope.launch {
             try {
                 val registro = SignupRequest(email, username, pass, isEnterprise)

@@ -9,24 +9,37 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gymrats.gymratsapp.R
+import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun SplashScreen(
     onNavigateToMain: () -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
+    val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
+
     LaunchedEffect(Unit) {
         delay(1700)
-        onNavigateToAuth()
+        val token = sessionManager.userToken.first()
+
+        if (!token.isNullOrEmpty()) {
+            onNavigateToMain()
+        } else {
+            onNavigateToAuth()
+        }
     }
 
     GymRatsTheme(dynamicColor = false) {
