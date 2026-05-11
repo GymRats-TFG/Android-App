@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.codebychriss.gymrats"
+    namespace = "com.gymrats.gymratsapp"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.codebychriss.gymrats"
+        applicationId = "com.gymrats.gymratsapp"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.codebychriss.gymrats
+package com.gymrats.gymratsapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.codebychriss.gymrats.ui.theme.GymRatsTheme
+import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

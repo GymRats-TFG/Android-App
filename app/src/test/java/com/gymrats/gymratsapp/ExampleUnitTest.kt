@@ -1,4 +1,4 @@
-package com.codebychriss.gymrats
+package com.gymrats.gymratsapp
 
 import org.junit.Test
 
