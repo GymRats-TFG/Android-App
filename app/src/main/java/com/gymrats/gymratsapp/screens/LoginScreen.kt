@@ -1,5 +1,6 @@
 package com.gymrats.gymratsapp.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,10 +26,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,21 +45,37 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getString
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gymrats.gymratsapp.R
+import com.gymrats.gymratsapp.ViewModels.AuthViewModel
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
-fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit) {
-    val scope = rememberCoroutineScope()
-    var emailOusuario by remember { mutableStateOf("") }
+fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: AuthViewModel = viewModel()) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     // Para evitar realizar más de una vez la misma llamada
     var isLoading by remember { mutableStateOf(false) }
+
+    // Observador de errores
+    LaunchedEffect(authViewModel.errorMessage) {
+        authViewModel.errorMessage?.let { mensaje ->
+            Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
+            isLoading = false
+        }
+    }
+
+    // Observador de éxito
+    LaunchedEffect(authViewModel.success) {
+        if (authViewModel.success) {
+            isLoading = false
+            onLogin()
+        }
+    }
 
     GymRatsTheme(dynamicColor = false) {
         Box(
@@ -85,9 +102,9 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 OutlinedTextField(
-                    value = emailOusuario,
-                    onValueChange = { emailOusuario = it },
-                    label = { Text(getString(context, R.string.username_or_email)) },
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(getString(context, R.string.email)) },
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.width(300.dp)
@@ -119,12 +136,13 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit) {
 
                 Button(
                     onClick = {
-                        if (!isLoading) {
-                            isLoading = true
-                            scope.launch {
-
-                                isLoading = false
+                        if (email.isNotEmpty() && password.isNotEmpty()) {
+                            if (!isLoading) {
+                                isLoading = true
+                                authViewModel.ejecutarLogin(email, password)
                             }
+                        } else {
+                            Toast.makeText(context, getString(context, R.string.complete_all_fields), Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = Modifier

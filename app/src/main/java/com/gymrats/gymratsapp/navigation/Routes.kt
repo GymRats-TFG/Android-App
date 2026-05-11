@@ -5,4 +5,5 @@ sealed class Routes(val route: String) {
     data object AuthGraph : Routes("auth")
     data object Login : Routes("login")
     data object Signup : Routes("signup")
+    data object Home : Routes("home")
 }

@@ -29,8 +29,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,14 +47,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getString
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gymrats.gymratsapp.R
+import com.gymrats.gymratsapp.ViewModels.AuthViewModel
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
-fun SignupScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
-    val scope = rememberCoroutineScope()
+fun SignupScreen(
+    onSignUp: () -> Unit,
+    onBackToLogin: () -> Unit,
+    authViewModel: AuthViewModel = viewModel()
+) {
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -69,6 +73,22 @@ fun SignupScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
         // Navegar de vuelta a la pantalla de login
         // al presionar el botón de retroceso del dispositivo
         onBackToLogin()
+    }
+
+    // Observador de errores
+    LaunchedEffect(authViewModel.errorMessage) {
+        authViewModel.errorMessage?.let { mensaje ->
+            Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
+        }
+        isLoading = false
+    }
+
+    // Observador de éxito
+    LaunchedEffect(authViewModel.success) {
+        if (authViewModel.success) {
+            isLoading = false
+            onSignUp()
+        }
     }
 
     GymRatsTheme(dynamicColor = false) {
@@ -146,7 +166,10 @@ fun SignupScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                                contentDescription = getString(context, R.string.toggle_password_visibility)
+                                contentDescription = getString(
+                                    context,
+                                    R.string.toggle_password_visibility
+                                )
                             )
                         }
                     },
@@ -168,7 +191,10 @@ fun SignupScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                                contentDescription = getString(context, R.string.toggle_password_visibility)
+                                contentDescription = getString(
+                                    context,
+                                    R.string.toggle_password_visibility
+                                )
                             )
                         }
                     },
@@ -182,19 +208,18 @@ fun SignupScreen(onSignUp: () -> Unit, onBackToLogin: () -> Unit) {
                 Button(
                     onClick = {
                         if (!isLoading) {
-                            isLoading = true
-                            if (password == confirmPassword) {
-                                scope.launch {
-
-                                    isLoading = false
-                                }
+                            if (password == confirmPassword && email.isNotEmpty() && username.isNotEmpty()) {
+                                isLoading = true
+                                authViewModel.ejecutarSignup(email, username, password, false)
                             } else {
-                                Toast.makeText(
+                                val msg = if (password != confirmPassword) getString(
                                     context,
-                                    getString(context, R.string.password_dont_match),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                isLoading = false
+                                    R.string.password_dont_match
+                                ).uppercase(Locale.getDefault()) else getString(
+                                    context,
+                                    R.string.complete_all_fields
+                                ).uppercase(Locale.getDefault())
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                             }
                         }
                     },

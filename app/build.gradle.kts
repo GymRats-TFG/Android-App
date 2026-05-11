@@ -64,4 +64,10 @@ dependencies {
     // Coil para la carga de imágenes asíncronas
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0")
+
+    // Retrofit: La librería para hacer peticiones HTTP
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Converter GSON: Para que Retrofit convierta el JSON de FastAPI a clases de Kotlin automáticamente
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
