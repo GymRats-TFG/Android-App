@@ -105,19 +105,13 @@ fun SignupScreen(
             onDismissRequest = { showEnterpriseDialog = false },
             title = {
                 Text(
-                    text = getString(
-                        context,
-                        R.string.enterprise_account
-                    ),
+                    text = stringResource(R.string.enterprise_account),
                     fontFamily = FontFamily(Font(R.font.poppins_semibold))
                 )
             },
             text = {
                 Text(
-                    text = getString(
-                        context,
-                        R.string.create_enterprise_account_msg
-                    ),
+                    text = stringResource(R.string.create_enterprise_account_msg),
                     fontFamily = FontFamily(Font(R.font.poppins_regular))
                 )
             },
@@ -126,10 +120,7 @@ fun SignupScreen(
                     isEnterprise = true
                     showEnterpriseDialog = false
                 }) {
-                    Text(getString(
-                        context,
-                        R.string.confirm
-                    ), color = MaterialTheme.colorScheme.primary)
+                    Text(stringResource(R.string.confirm), color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
@@ -137,10 +128,7 @@ fun SignupScreen(
                     isEnterprise = false
                     showEnterpriseDialog = false
                 }) {
-                    Text(getString(
-                        context,
-                        R.string.cancel
-                    ), color = Color.Gray)
+                    Text(stringResource(R.string.cancel), color = Color.Gray)
                 }
             }
         )
@@ -172,13 +160,13 @@ fun SignupScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.gymrats_logo),
-                    contentDescription = getString(context, R.string.gymrats_logo),
+                    contentDescription = stringResource(R.string.gymrats_logo),
                     modifier = Modifier.size(184.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
 
                 Text(
-                    text = getString(context, R.string.create_account),
+                    text = stringResource(R.string.create_account),
                     fontSize = 36.sp,
                     fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                     color = MaterialTheme.colorScheme.primary
@@ -189,7 +177,7 @@ fun SignupScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text(getString(context, R.string.email)) },
+                    label = { Text(stringResource(R.string.email)) },
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
@@ -201,7 +189,7 @@ fun SignupScreen(
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text(getString(context, R.string.username)) },
+                    label = { Text(stringResource(R.string.username)) },
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
@@ -213,7 +201,7 @@ fun SignupScreen(
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text(getString(context, R.string.password)) },
+                    label = { Text(stringResource(R.string.password)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
@@ -221,10 +209,7 @@ fun SignupScreen(
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                                contentDescription = getString(
-                                    context,
-                                    R.string.toggle_password_visibility
-                                )
+                                contentDescription = stringResource(R.string.toggle_password_visibility)
                             )
                         }
                     },
@@ -238,7 +223,7 @@ fun SignupScreen(
                 OutlinedTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
-                    label = { Text(getString(context, R.string.repeat_password)) },
+                    label = { Text(stringResource(R.string.repeat_password)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
@@ -246,10 +231,7 @@ fun SignupScreen(
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                                contentDescription = getString(
-                                    context,
-                                    R.string.toggle_password_visibility
-                                )
+                                contentDescription = stringResource(R.string.toggle_password_visibility)
                             )
                         }
                     },
@@ -296,10 +278,7 @@ fun SignupScreen(
                     Spacer(modifier = Modifier.width(12.dp))
 
                     Text(
-                        text = getString(
-                            context,
-                            R.string.create_enterprise_account
-                        ),
+                        text = stringResource(R.string.create_enterprise_account),
                         fontFamily = FontFamily(Font(R.font.poppins_regular)),
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground

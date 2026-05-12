@@ -30,9 +30,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 val response = RetrofitClient.instance.login(email, pass)
 
                 if (response.isSuccessful) {
-                    val token = response.body()?.access_token
-                    token?.let {
-                        sessionManager.saveToken(it) // <--- GUARDAMOS EL TOKEN
+                    val loginResponse = response.body()
+
+                    if (loginResponse != null) {
+                        sessionManager.saveToken(loginResponse.access_token)
+
+                        val isEnt = loginResponse.user.user_metadata.is_enterprise
+                        sessionManager.saveIsEnterprise(isEnt)
+
                         success = true
                     }
                 } else {
@@ -53,9 +58,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 val response = RetrofitClient.instance.signup(registro)
 
                 if (response.isSuccessful) {
-                    success = true
+                    val userData = response.body()
+                    if (userData != null) {
+                        sessionManager.saveIsEnterprise(userData.user_metadata.is_enterprise)
+                        success = true
+                    }
                 } else {
-                    errorMessage = "Error en registro: ${response.errorBody()?.string()}"
+                    errorMessage = "Error en registro: Usuario existente o datos inválidos"
                 }
             } catch (e: Exception) {
                 errorMessage = "Error de red: ${e.message}"

@@ -1,0 +1,78 @@
+package com.gymrats.gymratsapp.navigation
+
+import androidx.activity.result.launch
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.gymrats.gymratsapp.components.BottomNavBar
+import com.gymrats.gymratsapp.data.SessionManager
+import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
+import com.gymrats.gymratsapp.screens.ProfileScreen
+import com.gymrats.gymratsapp.screens.QRScreen
+import com.gymrats.gymratsapp.screens.ScannerScreen
+import com.gymrats.gymratsapp.screens.UserHomeScreen
+import kotlinx.coroutines.launch
+
+@Composable
+fun MainScaffold(rootNavController: NavController) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val sessionManager = remember { SessionManager(context) }
+
+    val isEnterprise by sessionManager.isEnterprise.collectAsState(initial = false)
+
+    val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
+    Scaffold(
+        bottomBar = {
+            BottomNavBar(
+                navController = navController,
+                isEnterprise = isEnterprise
+            )
+        }
+    ) { padding ->
+        NavHost(
+            navController = navController,
+            startDestination = NavBarRoutes.Home.route,
+            modifier = Modifier.padding(padding)
+        ) {
+            composable(NavBarRoutes.Home.route) {
+                if (isEnterprise) {
+                    EnterpriseHomeScreen()
+                } else {
+                    UserHomeScreen()
+                }
+            }
+
+            composable(NavBarRoutes.QR.route) { QRScreen() }
+            composable(NavBarRoutes.Scanner.route) { ScannerScreen() }
+
+            composable(NavBarRoutes.Profile.route) {
+                ProfileScreen(
+                    isEnterprise = isEnterprise,
+                    onLogout = {
+                        scope.launch {
+                            sessionManager.clearSession()
+                            rootNavController.navigate(Routes.AuthGraph.route) {
+                                popUpTo(Routes.Main.route) { inclusive = true }
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    }
+}

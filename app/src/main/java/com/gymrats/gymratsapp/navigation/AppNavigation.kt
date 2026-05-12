@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.gymrats.gymratsapp.ViewModels.AuthViewModel
-import com.gymrats.gymratsapp.screens.HomeScreen
 import com.gymrats.gymratsapp.screens.LoginScreen
 import com.gymrats.gymratsapp.screens.SignupScreen
 import com.gymrats.gymratsapp.screens.SplashScreen
@@ -25,8 +24,8 @@ fun AppNavigation(){
         composable(Routes.Splash.route) {
             SplashScreen(
                 onNavigateToMain = {
-                    navController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.Home.route) { inclusive = true }
+                    navController.navigate(Routes.Main.route) {
+                        popUpTo(Routes.Main.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
@@ -55,8 +54,8 @@ fun AppNavigation(){
                         }
                     },
                     onLogin = {
-                        navController.navigate(Routes.Home.route) {
-                            popUpTo(Routes.Home.route) { inclusive = true }
+                        navController.navigate(Routes.Main.route) {
+                            popUpTo(Routes.Main.route) { inclusive = true }
                             launchSingleTop = true
                         }
                     }
@@ -68,8 +67,8 @@ fun AppNavigation(){
                 SignupScreen(
                     authViewModel = authViewModel,
                     onSignUp = {
-                        navController.navigate(Routes.Home.route) {
-                            popUpTo(Routes.Home.route) { inclusive = true }
+                        navController.navigate(Routes.Main.route) {
+                            popUpTo(Routes.Main.route) { inclusive = true }
                             launchSingleTop = true
                         }
                     },
@@ -80,9 +79,9 @@ fun AppNavigation(){
             }
         }
 
-        // pantalla de home
-        composable(Routes.Home.route){
-            HomeScreen()
+        // Navegación entre pantallas una vez autenticado
+        composable(Routes.Main.route) {
+            MainScaffold(rootNavController = navController)
         }
     }
 }

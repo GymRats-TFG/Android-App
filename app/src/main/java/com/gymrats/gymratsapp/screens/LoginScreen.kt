@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
@@ -87,13 +88,13 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = painterResource(id = R.drawable.gymrats_logo),
-                    contentDescription = getString(context, R.string.gymrats_logo),
+                    contentDescription = stringResource(R.string.gymrats_logo),
                     modifier = Modifier.size(184.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
 
                 Text(
-                    text = getString(context, R.string.login),
+                    text = stringResource(R.string.login),
                     fontSize = 36.sp,
                     fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                     color = MaterialTheme.colorScheme.primary
@@ -104,7 +105,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text(getString(context, R.string.email)) },
+                    label = { Text(stringResource(R.string.email)) },
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.width(300.dp)
@@ -115,7 +116,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text(getString(context, R.string.password)) },
+                    label = { Text(stringResource(R.string.password)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
@@ -123,7 +124,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                                contentDescription = getString(context, R.string.toggle_password_visibility)
+                                contentDescription = stringResource(R.string.toggle_password_visibility)
                             )
                         }
                     },
@@ -160,10 +161,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
                         }
                     } else {
                         Text(
-                            text = getString(
-                                context,
-                                R.string.login
-                            ).uppercase(Locale.getDefault()),
+                            text = stringResource(R.string.login).uppercase(Locale.getDefault()),
                             style = MaterialTheme.typography.bodyLarge,
                             fontFamily = FontFamily(Font(R.font.poppins_semibold))
                         )
@@ -174,7 +172,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
 
                 Row {
                     Text(
-                        text = getString(context, R.string.dont_have_account),
+                        text = stringResource(R.string.dont_have_account),
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(R.font.poppins_regular)),
                         color = MaterialTheme.colorScheme.onSurface
@@ -183,7 +181,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
                     Spacer(modifier = Modifier.width(6.dp))
 
                     Text(
-                        text = getString(context, R.string.here),
+                        text = stringResource(R.string.here),
                         fontSize = 12.sp,
                         fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                         color = MaterialTheme.colorScheme.primary,

@@ -23,4 +23,10 @@
     <string name="create_enterprise_account_msg">Ten en cuenta que una vez creada la cuenta como empresa, no se podrá cambiar a cuenta de usuario personal en el futuro. ¿Deseas continuar?</string>
     <string name="confirm">Confirmar</string>
     <string name="cancel">Cancelar</string>
+
+    <!--  BottonNavBar  -->
+    <string name="home">INICIO</string>
+    <string name="scanner">ESCÁNER</string>
+    <string name="my_qr">MI QR</string>
+    <string name="profile">PERFIL</string>
 </resources>

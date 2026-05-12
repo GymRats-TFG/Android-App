@@ -24,8 +24,3 @@ data class SignupRequest(
     val password: String,
     val is_enterprise: Boolean = false
 )
-
-// Respuesta genérica para el registro o errores
-data class GenericResponse(
-    val message: String? = null
-)

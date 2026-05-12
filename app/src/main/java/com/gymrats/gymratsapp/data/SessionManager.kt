@@ -1,6 +1,7 @@
 package com.gymrats.gymratsapp.data
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -12,6 +13,7 @@ private val Context.dataStore by preferencesDataStore(name = "user_session")
 class SessionManager(private val context: Context) {
     companion object {
         private val USER_TOKEN = stringPreferencesKey("user_token")
+        private val IS_ENTERPRISE = booleanPreferencesKey("is_enterprise")
     }
 
     suspend fun saveToken(token: String) {
@@ -22,6 +24,16 @@ class SessionManager(private val context: Context) {
 
     val userToken: Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[USER_TOKEN]
+    }
+
+    suspend fun saveIsEnterprise(isEnterprise: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[IS_ENTERPRISE] = isEnterprise
+        }
+    }
+
+    val isEnterprise: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[IS_ENTERPRISE] ?: false
     }
 
     suspend fun clearSession() {
