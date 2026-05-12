@@ -7,8 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -19,8 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -59,12 +65,14 @@ fun SignupScreen(
     onBackToLogin: () -> Unit,
     authViewModel: AuthViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var isEnterprise by remember { mutableStateOf(false) }
+    var showEnterpriseDialog by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     // Para evitar realizar más de una vez la misma llamada
     var isLoading by remember { mutableStateOf(false) }
@@ -89,6 +97,53 @@ fun SignupScreen(
             isLoading = false
             onSignUp()
         }
+    }
+
+    // Diálogo de advertencia
+    if (showEnterpriseDialog) {
+        AlertDialog(
+            onDismissRequest = { showEnterpriseDialog = false },
+            title = {
+                Text(
+                    text = getString(
+                        context,
+                        R.string.enterprise_account
+                    ),
+                    fontFamily = FontFamily(Font(R.font.poppins_semibold))
+                )
+            },
+            text = {
+                Text(
+                    text = getString(
+                        context,
+                        R.string.create_enterprise_account_msg
+                    ),
+                    fontFamily = FontFamily(Font(R.font.poppins_regular))
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    isEnterprise = true
+                    showEnterpriseDialog = false
+                }) {
+                    Text(getString(
+                        context,
+                        R.string.confirm
+                    ), color = MaterialTheme.colorScheme.primary)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    isEnterprise = false
+                    showEnterpriseDialog = false
+                }) {
+                    Text(getString(
+                        context,
+                        R.string.cancel
+                    ), color = Color.Gray)
+                }
+            }
+        )
     }
 
     GymRatsTheme(dynamicColor = false) {
@@ -203,6 +258,54 @@ fun SignupScreen(
                         .width(300.dp)
                 )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .clickable {
+                            if (!isEnterprise) showEnterpriseDialog = true
+                            else isEnterprise = false
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .background(
+                                color = if (isEnterprise) MaterialTheme.colorScheme.primary else Color.Transparent,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .border(
+                                width = 2.dp,
+                                color = if (isEnterprise) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isEnterprise) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                                tint = Color.White
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Text(
+                        text = getString(
+                            context,
+                            R.string.create_enterprise_account
+                        ),
+                        fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(28.dp))
 
                 Button(
@@ -210,15 +313,15 @@ fun SignupScreen(
                         if (!isLoading) {
                             if (password == confirmPassword && email.isNotEmpty() && username.isNotEmpty()) {
                                 isLoading = true
-                                authViewModel.ejecutarSignup(email, username, password, false)
+                                authViewModel.ejecutarSignup(email, username, password, isEnterprise)
                             } else {
                                 val msg = if (password != confirmPassword) getString(
                                     context,
                                     R.string.password_dont_match
-                                ).uppercase(Locale.getDefault()) else getString(
+                                ) else getString(
                                     context,
                                     R.string.complete_all_fields
-                                ).uppercase(Locale.getDefault())
+                                )
                                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                             }
                         }

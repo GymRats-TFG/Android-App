@@ -18,4 +18,9 @@
     <string name="password_dont_match">Las contraseñas no coinciden</string>
     <string name="register">Registrarse</string>
     <string name="complete_all_fields">Completa todos los campos</string>
+    <string name="create_enterprise_account">Crear cuenta de empresa</string>
+    <string name="enterprise_account">Cuenta de empresa</string>
+    <string name="create_enterprise_account_msg">Ten en cuenta que una vez creada la cuenta como empresa, no se podrá cambiar a cuenta de usuario personal en el futuro. ¿Deseas continuar?</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
 </resources>
