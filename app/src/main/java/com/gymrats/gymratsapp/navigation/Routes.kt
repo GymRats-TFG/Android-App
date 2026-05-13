@@ -15,4 +15,6 @@ sealed class NavBarRoutes(val route: String) {
     // Rutas específicas
     object QR : NavBarRoutes("qr") // Usuario normal
     object Scanner : NavBarRoutes("scanner") // Enterprise
+
+    object EditProfile : NavBarRoutes("edit_profile")
 }

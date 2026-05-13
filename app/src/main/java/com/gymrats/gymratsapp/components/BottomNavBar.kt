@@ -48,7 +48,7 @@ fun BottomNavBar(navController: NavController, isEnterprise: Boolean) {
         color = MaterialTheme.colorScheme.onBackground
     ) {
         NavigationBar(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.onPrimary,
             tonalElevation = 0.dp
         ) {
             val homeSelected = currentRoute == NavBarRoutes.Home.route
@@ -125,7 +125,7 @@ fun BottomNavBar(navController: NavController, isEnterprise: Boolean) {
 private fun navigationItemColors() = NavigationBarItemDefaults.colors(
     selectedIconColor = MaterialTheme.colorScheme.primary,
     selectedTextColor = MaterialTheme.colorScheme.primary,
-    indicatorColor = Color(0xFFFFEBE3),
+    indicatorColor = Color(0x55FF4500),
     unselectedIconColor = Color.Gray,
     unselectedTextColor = Color.Gray
 )

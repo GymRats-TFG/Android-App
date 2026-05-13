@@ -81,7 +81,7 @@ fun AppNavigation(){
 
         // Navegación entre pantallas una vez autenticado
         composable(Routes.Main.route) {
-            MainScaffold(rootNavController = navController)
+            MainScaffold(navController, authViewModel)
         }
     }
 }

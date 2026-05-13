@@ -8,14 +8,13 @@ data class LoginResponse(
 )
 
 data class UserData(
-    val id: String,
-    val email: String,
-    val user_metadata: UserMetadata
-)
-
-data class UserMetadata(
-    val username: String,
-    val is_enterprise: Boolean
+    val id: String = "",
+    val email: String = "",
+    val username: String = "",
+    val name: String? = null,
+    val avatar_url: String? = null,
+    val description: String? = null,
+    val is_enterprise: Boolean = false
 )
 
 data class SignupRequest(

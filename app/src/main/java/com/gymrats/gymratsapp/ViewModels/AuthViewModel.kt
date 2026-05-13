@@ -8,8 +8,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.SignupRequest
+import com.gymrats.gymratsapp.data.UserData
 import com.gymrats.gymratsapp.remote.RetrofitClient
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
@@ -19,6 +26,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     var success by mutableStateOf(false)
+        private set
+
+    var userProfile by mutableStateOf<UserData?>(null)
         private set
 
     fun ejecutarLogin(email: String, pass: String) {
@@ -35,7 +45,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     if (loginResponse != null) {
                         sessionManager.saveToken(loginResponse.access_token)
 
-                        val isEnt = loginResponse.user.user_metadata.is_enterprise
+                        val isEnt = loginResponse.user.is_enterprise
                         sessionManager.saveIsEnterprise(isEnt)
 
                         success = true
@@ -60,7 +70,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 if (response.isSuccessful) {
                     val userData = response.body()
                     if (userData != null) {
-                        sessionManager.saveIsEnterprise(userData.user_metadata.is_enterprise)
+                        sessionManager.saveIsEnterprise(userData.is_enterprise)
                         success = true
                     }
                 } else {
@@ -69,6 +79,71 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             } catch (e: Exception) {
                 errorMessage = "Error de red: ${e.message}"
             }
+        }
+    }
+
+    fun cargarPerfil() {
+        viewModelScope.launch {
+            try {
+                val token = sessionManager.userToken.first()
+                if (!token.isNullOrEmpty()) {
+                    val response = RetrofitClient.instance.getMyProfile("Bearer $token")
+                    if (response.isSuccessful) {
+                        userProfile = response.body()
+                        userProfile?.let { sessionManager.saveIsEnterprise(it.is_enterprise) }
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        println("DEBUG_AUTH: Error ${response.code()} - $errorBody")
+                        errorMessage = "Sesión expirada"
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage = "Error de conexión"
+            }
+        }
+    }
+
+    fun clearState() {
+        success = false
+        errorMessage = null
+        userProfile = null
+    }
+
+    suspend fun updateUserProfile(
+        newUsername: String?,
+        newName: String?,
+        imageFile: File?
+    ): Result<UserData> {
+        return try {
+            val token = sessionManager.userToken.first()
+            if (token.isNullOrEmpty()) return Result.failure(Exception("No token"))
+
+            // Convertimos Strings a RequestBody
+            val namePart = newName?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val usernamePart = newUsername?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+            // Preparamos la imagen si existe
+            val imagePart = imageFile?.let {
+                val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
+                MultipartBody.Part.createFormData("avatar_file", it.name, requestFile)
+            }
+
+            val response = RetrofitClient.instance.updateProfile(
+                "Bearer $token",
+                namePart,
+                usernamePart,
+                imagePart
+            )
+
+            if (response.isSuccessful && response.body() != null) {
+                userProfile = response.body()
+                Result.success(userProfile!!)
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Error desconocido"
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

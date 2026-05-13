@@ -4,19 +4,23 @@ import androidx.activity.result.launch
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.gymrats.gymratsapp.ViewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
+import com.gymrats.gymratsapp.screens.EditProfileScreen
 import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
 import com.gymrats.gymratsapp.screens.ProfileScreen
 import com.gymrats.gymratsapp.screens.QRScreen
@@ -25,7 +29,7 @@ import com.gymrats.gymratsapp.screens.UserHomeScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScaffold(rootNavController: NavController) {
+fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sessionManager = remember { SessionManager(context) }
@@ -36,12 +40,16 @@ fun MainScaffold(rootNavController: NavController) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
+    val shouldShowBottomBar = currentRoute != "edit_profile"
+
     Scaffold(
         bottomBar = {
-            BottomNavBar(
-                navController = navController,
-                isEnterprise = isEnterprise
-            )
+            if (shouldShowBottomBar) { // Solo se muestra si no estamos editando el perfil
+                BottomNavBar(
+                    navController = navController,
+                    isEnterprise = isEnterprise
+                )
+            }
         }
     ) { padding ->
         NavHost(
@@ -62,14 +70,28 @@ fun MainScaffold(rootNavController: NavController) {
 
             composable(NavBarRoutes.Profile.route) {
                 ProfileScreen(
-                    isEnterprise = isEnterprise,
+                    authViewModel = authViewModel,
+                    userProfile = authViewModel.userProfile,
                     onLogout = {
                         scope.launch {
+                            authViewModel.clearState()
                             sessionManager.clearSession()
                             rootNavController.navigate(Routes.AuthGraph.route) {
                                 popUpTo(Routes.Main.route) { inclusive = true }
                             }
                         }
+                    },
+                    onEditClick = { navController.navigate("edit_profile") }
+                )
+            }
+
+            composable("edit_profile") {
+                EditProfileScreen(
+                    authViewModel = authViewModel,
+                    onCloseClick = { navController.popBackStack() },
+                    onSaveChangesClick = {
+                        authViewModel.cargarPerfil()
+                        navController.popBackStack()
                     }
                 )
             }

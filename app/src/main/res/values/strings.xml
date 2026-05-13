@@ -29,4 +29,30 @@
     <string name="scanner">ESCÁNER</string>
     <string name="my_qr">MI QR</string>
     <string name="profile">PERFIL</string>
+    <string name="profile_close_session">Cerrar sesión</string>
+    <string name="profile_avatar_description">Avatar</string>
+    <string name="profile_name_fallback">Nombre no disponible</string>
+    <string name="profile_edit_profile">EDITAR PERFIL</string>
+    <string name="section_company_summary">RESUMEN DE LA EMPRESA</string>
+    <string name="section_your_locations">TUS SEDES</string>
+    <string name="section_activity_log">REGISTRO DE ACTIVIDAD</string>
+    <string name="section_subscriptions">SUSCRIPCIONES</string>
+    <string name="action_see_all">Ver todo</string>
+    <string name="stat_total_locations">TOTAL DE SEDES</string>
+    <string name="stat_active_subscribers">SUSCRIPTORES ACTIVOS</string>
+    <string name="button_add_location">AÑADIR SEDE</string>
+    <string name="empty_no_recent_activity">No hay actividad reciente</string>
+    <string name="empty_no_active_subscriptions">No hay suscripciones activas</string>
+
+    <!--  EditProfileScreen  -->
+    <string name="edit_profile_title">Editar Perfil</string>
+    <string name="action_close">Cerrar</string>
+    <string name="label_full_name">Nombre Completo</string>
+    <string name="label_username">Nombre de Usuario</string>
+    <string name="button_save_changes">GUARDAR CAMBIOS</string>
+    <string name="dialog_title_unsaved_changes">Cambios sin guardar</string>
+    <string name="dialog_message_discard">¿Deseas descartar los cambios realizados?</string>
+    <string name="dialog_action_discard">Descartar</string>
+    <string name="dialog_action_continue_editing">Seguir editando</string>
+    <string name="toast_profile_updated">Perfil actualizado</string>
 </resources>
