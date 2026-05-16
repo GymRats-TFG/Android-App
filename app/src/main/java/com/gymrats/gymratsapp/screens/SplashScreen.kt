@@ -44,14 +44,18 @@ fun SplashScreen(
         }
     }
 
-    LaunchedEffect(authViewModel.success) {
+    LaunchedEffect(authViewModel.success, authViewModel.errorMessage) {
+        // Si terminó el proceso (ya sea por success o porque saltó un error)
         if (authViewModel.success) {
-            // Si hay un error (ej: sesión expirada), vamos al Auth
             if (authViewModel.userProfile != null) {
                 onNavigateToMain()
             } else {
                 onNavigateToAuth()
             }
+        } else if (authViewModel.errorMessage != null) {
+            // Si dio error de conexión o sesión expirada
+            delay(500) // Pequeño delay para que lean el Toast
+            onNavigateToAuth()
         }
     }
 

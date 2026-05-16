@@ -39,6 +39,11 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
 
     val isEnterprise = authViewModel.isEnterprise
 
+    if (isEnterprise == null) {
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+        return
+    }
+
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route

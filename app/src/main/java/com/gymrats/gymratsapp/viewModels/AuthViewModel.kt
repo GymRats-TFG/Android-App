@@ -31,12 +31,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     var userProfile by mutableStateOf<UserData?>(null)
         private set
 
-    var isEnterprise by mutableStateOf(false)
+    var isEnterprise by mutableStateOf(null as Boolean?)
         private set
 
     fun ejecutarLogin(email: String, pass: String) {
         success = false
         errorMessage = null
+        isEnterprise = null
         viewModelScope.launch {
             try {
                 // Llamamos directamente con los parámetros @Field
@@ -50,9 +51,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
                         sessionManager.saveToken(loginResponse.access_token)
                         sessionManager.saveIsEnterprise(isEnt)
-                        isEnterprise = isEnt
 
+                        isEnterprise = isEnt
                         userProfile = loginResponse.user
+
                         success = true
                     }
                 } else {
@@ -67,6 +69,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun ejecutarSignup(email: String, username: String, pass: String, isEnterprise: Boolean) {
         success = false
         errorMessage = null
+        this@AuthViewModel.isEnterprise = null
         viewModelScope.launch {
             try {
                 val registro = SignupRequest(email, username, pass, isEnterprise)
@@ -78,8 +81,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                         val isEnt = userData.is_enterprise
 
                         sessionManager.saveIsEnterprise(userData.is_enterprise)
+
                         this@AuthViewModel.isEnterprise = isEnt
                         userProfile = userData
+
                         success = true
                     }
                 } else {
@@ -93,6 +98,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun cargarPerfil() {
         success = false
+        errorMessage = null
         viewModelScope.launch {
             try {
                 val token = sessionManager.userToken.first()
@@ -104,17 +110,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                             val isEnt = it.is_enterprise
                             sessionManager.saveIsEnterprise(isEnt)
                             isEnterprise = isEnt
+                            success = true
                         }
                     } else {
+                        clearState()
+                        sessionManager.clearSession()
                         val errorBody = response.errorBody()?.string()
                         println("DEBUG_AUTH: Error ${response.code()} - $errorBody")
-                        errorMessage = "Sesión expirada"
+//                        errorMessage = "Sesión expirada"
                     }
                 }
             } catch (e: Exception) {
-                errorMessage = "Error de conexión"
+                clearState()
+                sessionManager.clearSession()
+//                errorMessage = "Error de conexión"
             } finally {
-                success = true
+                if(!success) userProfile = null
             }
         }
     }
@@ -123,7 +134,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         success = false
         errorMessage = null
         userProfile = null
-        isEnterprise = false
+        isEnterprise = null
     }
 
     suspend fun updateUserProfile(

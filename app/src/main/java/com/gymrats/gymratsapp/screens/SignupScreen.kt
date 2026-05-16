@@ -91,10 +91,10 @@ fun SignupScreen(
         isLoading = false
     }
 
-    // Observador de éxito
-    LaunchedEffect(authViewModel.success) {
-        if (authViewModel.success) {
-            isLoading = false
+    // Observador de éxito robusto
+    LaunchedEffect(authViewModel.success, authViewModel.isEnterprise) {
+        // Solo navegamos si success es true Y isEnterprise ya tiene un valor (true o false)
+        if (authViewModel.success && authViewModel.isEnterprise != null) {
             onSignUp()
         }
     }
