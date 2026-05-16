@@ -1,12 +1,18 @@
 package com.gymrats.gymratsapp.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
@@ -14,7 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.gymrats.gymratsapp.ViewModels.AuthViewModel
+import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.screens.EditProfileScreen
@@ -31,7 +37,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
     val scope = rememberCoroutineScope()
     val sessionManager = remember { SessionManager(context) }
 
-    val isEnterprise by sessionManager.isEnterprise.collectAsState(initial = false)
+    val isEnterprise = authViewModel.isEnterprise
 
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()

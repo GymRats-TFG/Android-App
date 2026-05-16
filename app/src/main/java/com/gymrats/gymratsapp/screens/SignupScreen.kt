@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gymrats.gymratsapp.R
-import com.gymrats.gymratsapp.ViewModels.AuthViewModel
+import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
 import java.util.Locale
 

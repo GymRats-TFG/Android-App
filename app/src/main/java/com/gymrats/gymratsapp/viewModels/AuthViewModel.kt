@@ -1,4 +1,4 @@
-package com.gymrats.gymratsapp.ViewModels
+package com.gymrats.gymratsapp.viewModels
 
 import android.app.Application
 import androidx.compose.runtime.getValue
@@ -31,6 +31,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     var userProfile by mutableStateOf<UserData?>(null)
         private set
 
+    var isEnterprise by mutableStateOf(false)
+        private set
+
     fun ejecutarLogin(email: String, pass: String) {
         success = false
         errorMessage = null
@@ -43,11 +46,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     val loginResponse = response.body()
 
                     if (loginResponse != null) {
-                        sessionManager.saveToken(loginResponse.access_token)
-
                         val isEnt = loginResponse.user.is_enterprise
-                        sessionManager.saveIsEnterprise(isEnt)
 
+                        sessionManager.saveToken(loginResponse.access_token)
+                        sessionManager.saveIsEnterprise(isEnt)
+                        isEnterprise = isEnt
+
+                        userProfile = loginResponse.user
                         success = true
                     }
                 } else {
@@ -70,7 +75,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 if (response.isSuccessful) {
                     val userData = response.body()
                     if (userData != null) {
+                        val isEnt = userData.is_enterprise
+
                         sessionManager.saveIsEnterprise(userData.is_enterprise)
+                        this@AuthViewModel.isEnterprise = isEnt
+                        userProfile = userData
                         success = true
                     }
                 } else {
@@ -83,6 +92,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun cargarPerfil() {
+        success = false
         viewModelScope.launch {
             try {
                 val token = sessionManager.userToken.first()
@@ -90,7 +100,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     val response = RetrofitClient.instance.getMyProfile("Bearer $token")
                     if (response.isSuccessful) {
                         userProfile = response.body()
-                        userProfile?.let { sessionManager.saveIsEnterprise(it.is_enterprise) }
+                        userProfile?.let {
+                            val isEnt = it.is_enterprise
+                            sessionManager.saveIsEnterprise(isEnt)
+                            isEnterprise = isEnt
+                        }
                     } else {
                         val errorBody = response.errorBody()?.string()
                         println("DEBUG_AUTH: Error ${response.code()} - $errorBody")
@@ -99,6 +113,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 }
             } catch (e: Exception) {
                 errorMessage = "Error de conexión"
+            } finally {
+                success = true
             }
         }
     }
@@ -107,6 +123,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         success = false
         errorMessage = null
         userProfile = null
+        isEnterprise = false
     }
 
     suspend fun updateUserProfile(

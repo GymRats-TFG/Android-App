@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
-import com.gymrats.gymratsapp.ViewModels.AuthViewModel
+import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.data.UserData
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
 
@@ -273,7 +273,7 @@ fun AddSedeButton() {
             .fillMaxWidth()
             .padding(vertical = 12.dp)
             .height(56.dp)
-            .background(Color.White, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(16.dp))
             .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
             .clickable { },
         contentAlignment = Alignment.Center
@@ -283,14 +283,14 @@ fun AddSedeButton() {
                 Icons.Default.Add,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = Color.Black
+                tint = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 stringResource(R.string.button_add_location),
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }

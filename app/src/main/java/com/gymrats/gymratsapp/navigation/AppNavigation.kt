@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.gymrats.gymratsapp.ViewModels.AuthViewModel
+import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.screens.LoginScreen
 import com.gymrats.gymratsapp.screens.SignupScreen
 import com.gymrats.gymratsapp.screens.SplashScreen
@@ -34,7 +34,8 @@ fun AppNavigation(){
                         popUpTo(Routes.Splash.route) { inclusive = true }
                         launchSingleTop = true
                     }
-                }
+                },
+                authViewModel
             )
         }
 

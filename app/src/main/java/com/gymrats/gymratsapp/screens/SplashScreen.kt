@@ -20,25 +20,38 @@ import androidx.compose.ui.unit.dp
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
+import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 
 @Composable
 fun SplashScreen(
     onNavigateToMain: () -> Unit,
-    onNavigateToAuth: () -> Unit
+    onNavigateToAuth: () -> Unit,
+    authViewModel: AuthViewModel
 ) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
 
     LaunchedEffect(Unit) {
-        delay(1700)
         val token = sessionManager.userToken.first()
 
         if (!token.isNullOrEmpty()) {
-            onNavigateToMain()
+            authViewModel.cargarPerfil()
         } else {
+            delay(1500)
             onNavigateToAuth()
+        }
+    }
+
+    LaunchedEffect(authViewModel.success) {
+        if (authViewModel.success) {
+            // Si hay un error (ej: sesión expirada), vamos al Auth
+            if (authViewModel.userProfile != null) {
+                onNavigateToMain()
+            } else {
+                onNavigateToAuth()
+            }
         }
     }
 
