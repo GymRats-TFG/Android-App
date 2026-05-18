@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -105,8 +104,6 @@ fun ProfileScreen(
                         model = userProfile.avatar_url,
                         contentDescription = stringResource(R.string.profile_avatar_description),
                         contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.gymrats_logo),
-                        fallback = painterResource(id = R.drawable.gymrats_logo),
                         modifier = Modifier
                             .size(120.dp)
                             .clip(CircleShape)
@@ -115,7 +112,7 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = userProfile.name ?: "Error",
+                        text = userProfile.name,
                         fontFamily = poppinsBold,
                         fontSize = 24.sp,
                         color = MaterialTheme.colorScheme.onBackground

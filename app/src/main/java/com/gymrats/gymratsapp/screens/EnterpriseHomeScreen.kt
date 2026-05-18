@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.components.DashedAddButton
 import com.gymrats.gymratsapp.components.SectionTitle
-import com.gymrats.gymratsapp.components.SedeCard
+import com.gymrats.gymratsapp.components.GymCard
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.viewModels.GymViewModel
 
@@ -91,7 +91,7 @@ fun EnterpriseHomeScreen(
             } else {
                 items(gyms.size) { index ->
                     val gym = gyms[index]
-                    SedeCard(
+                    GymCard(
                         name = gym.name,
                         address = gym.address?: "Ubicación no disponible.",
                         currentCapacity = gym.current_capacity,

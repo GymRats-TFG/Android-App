@@ -49,7 +49,8 @@ fun AppNavigation(){
                         launchSingleTop = true
                     }
                 },
-                authViewModel
+                authViewModel,
+                sessionManager
             )
         }
 
