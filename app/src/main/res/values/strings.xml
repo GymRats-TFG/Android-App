@@ -34,7 +34,7 @@
     <string name="profile_name_fallback">Nombre no disponible</string>
     <string name="profile_edit_profile">EDITAR PERFIL</string>
     <string name="section_company_summary">RESUMEN DE LA EMPRESA</string>
-    <string name="section_your_locations">TUS SEDES</string>
+    <string name="section_your_locations">MIS SEDES</string>
     <string name="section_activity_log">REGISTRO DE ACTIVIDAD</string>
     <string name="section_subscriptions">SUSCRIPCIONES</string>
     <string name="action_see_all">Ver todo</string>
@@ -55,4 +55,9 @@
     <string name="dialog_action_discard">Descartar</string>
     <string name="dialog_action_continue_editing">Seguir editando</string>
     <string name="toast_profile_updated">Perfil actualizado</string>
+
+    <!--  EnterpriseHomeScreen  -->
+    <string name="welcome_hello">¡Hola,</string>
+    <string name="business_man">Hombre de Negocios</string>
+    <string name="empty_no_locations">No tienes sedes registradas.</string>
 </resources>

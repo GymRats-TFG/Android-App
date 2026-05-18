@@ -29,6 +29,7 @@ import com.gymrats.gymratsapp.screens.ProfileScreen
 import com.gymrats.gymratsapp.screens.QRScreen
 import com.gymrats.gymratsapp.screens.ScannerScreen
 import com.gymrats.gymratsapp.screens.UserHomeScreen
+import com.gymrats.gymratsapp.viewModels.GymViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -36,6 +37,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sessionManager = remember { SessionManager(context) }
+    val gymViewModel = remember { GymViewModel(sessionManager) }
 
     val isEnterprise = authViewModel.isEnterprise
 
@@ -67,7 +69,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
         ) {
             composable(NavBarRoutes.Home.route) {
                 if (isEnterprise) {
-                    EnterpriseHomeScreen()
+                    EnterpriseHomeScreen(authViewModel, gymViewModel)
                 } else {
                     UserHomeScreen()
                 }

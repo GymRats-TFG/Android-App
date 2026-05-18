@@ -2,7 +2,6 @@ package com.gymrats.gymratsapp.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +9,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ExitToApp
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,11 +21,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
+import com.gymrats.gymratsapp.components.DashedAddButton
+import com.gymrats.gymratsapp.components.EmptyStateCard
+import com.gymrats.gymratsapp.components.SectionTitle
+import com.gymrats.gymratsapp.components.StatCard
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.data.UserData
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
@@ -166,7 +167,7 @@ fun ProfileScreen(
                     }
                 }
                 item { SectionTitle(stringResource(R.string.section_your_locations)) }
-                item { AddSedeButton() }
+                item { DashedAddButton({}) }
             } else {
                 item {
                     SectionTitle(
@@ -186,112 +187,6 @@ fun ProfileScreen(
             }
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
-        }
-    }
-}
-
-@Composable
-fun EmptyStateCard(text: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontFamily = FontFamily(Font(R.font.poppins_regular)),
-                fontSize = 14.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun SectionTitle(title: String, showVerTodo: Boolean = false) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp, bottom = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-        if (showVerTodo) {
-            Text(
-                text = "Ver todo",
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun StatCard(label: String, value: String, modifier: Modifier) {
-    Card(
-        modifier = modifier.height(110.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                label,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                value,
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun AddSedeButton() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp)
-            .height(56.dp)
-            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(16.dp))
-            .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
-            .clickable { },
-        contentAlignment = Alignment.Center
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                Icons.Default.Add,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                stringResource(R.string.button_add_location),
-                fontWeight = FontWeight.Bold,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
         }
     }
 }

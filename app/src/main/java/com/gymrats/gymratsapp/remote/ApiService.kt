@@ -33,4 +33,9 @@ interface ApiService {
         @Part("username") username: RequestBody?,
         @Part avatar_file: MultipartBody.Part?
     ): Response<UserData>
+
+    @GET("gyms/my")
+    suspend fun getMyGyms(
+        @Header("Authorization") token: String
+    ): Response<List<GymResponse>>
 }
