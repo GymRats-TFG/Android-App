@@ -31,19 +31,21 @@ import com.gymrats.gymratsapp.screens.QRScreen
 import com.gymrats.gymratsapp.screens.ScannerScreen
 import com.gymrats.gymratsapp.screens.UserHomeScreen
 import com.gymrats.gymratsapp.viewModels.GymViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel) {
+fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel, sessionManager: SessionManager) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val sessionManager = remember { SessionManager(context) }
     val gymViewModel = remember { GymViewModel(sessionManager) }
 
     val isEnterprise = authViewModel.isEnterprise
 
     if (isEnterprise == null) {
-        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+        Box(Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background))
         return
     }
 
@@ -93,8 +95,12 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
                         scope.launch {
                             authViewModel.clearState()
                             sessionManager.clearSession()
+
+                            // Damos tiempo al sistema de archivos para persistir el borrado
+//                            delay(800)
+
                             rootNavController.navigate(Routes.AuthGraph.route) {
-                                popUpTo(Routes.Main.route) { inclusive = true }
+                                popUpTo(0) { inclusive = true }
                             }
                         }
                     },

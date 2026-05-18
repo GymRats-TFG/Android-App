@@ -1,5 +1,6 @@
 package com.gymrats.gymratsapp.data
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit

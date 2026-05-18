@@ -19,8 +19,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 
-class AuthViewModel(application: Application) : AndroidViewModel(application) {
-    private val sessionManager = SessionManager(application)
+class AuthViewModel(application: Application, private val sessionManager: SessionManager) : AndroidViewModel(application) {
 
     var errorMessage by mutableStateOf<String?>(null)
         private set
@@ -33,6 +32,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     var isEnterprise by mutableStateOf(null as Boolean?)
         private set
+
+    var isLoading by mutableStateOf(false)
+    private set
 
     fun ejecutarLogin(email: String, pass: String) {
         success = false
@@ -99,6 +101,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun cargarPerfil() {
         success = false
         errorMessage = null
+        isLoading = true
         viewModelScope.launch {
             try {
                 val token = sessionManager.userToken.first()
@@ -126,6 +129,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 //                errorMessage = "Error de conexión"
             } finally {
                 if(!success) userProfile = null
+                isLoading = false
             }
         }
     }
@@ -135,6 +139,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         errorMessage = null
         userProfile = null
         isEnterprise = null
+        isLoading = false
     }
 
     suspend fun updateUserProfile(
