@@ -26,12 +26,18 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.getString
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
 import kotlinx.coroutines.launch
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.default
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 
 @Composable
 fun EditProfileScreen(
@@ -137,7 +143,7 @@ fun EditProfileScreen(
                     scope.launch {
                         isLoading = true
 
-                        val imageFile = itemImageUri?.let { uriToFile(context, it) }
+                        val imageFile = itemImageUri?.let { processAndCompressImage(context, it) }
 
                         val result = authViewModel.updateUserProfile(
                             newUsername = if (username != user?.username) username else null,
@@ -148,7 +154,7 @@ fun EditProfileScreen(
                         isLoading = false
 
                         result.onSuccess {
-                            Toast.makeText(context, getString(context, R.string.toast_profile_updated), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.toast_profile_updated), Toast.LENGTH_SHORT).show()
                             onSaveChangesClick()
                         }.onFailure { error ->
                             Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
@@ -191,11 +197,31 @@ fun EditProfileScreen(
     }
 }
 
-fun uriToFile(context: android.content.Context, uri: Uri): java.io.File? {
-    val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-    val tempFile = java.io.File.createTempFile("avatar_", ".png", context.cacheDir)
-    tempFile.outputStream().use { output ->
-        inputStream.copyTo(output)
+suspend fun processAndCompressImage(context: android.content.Context, uri: Uri): File? {
+    return withContext(Dispatchers.IO) {
+        try {
+            // Crear un archivo temporal desde la URI
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return@withContext null
+            val tempFile = File.createTempFile("raw_avatar_", ".png", context.cacheDir)
+            tempFile.outputStream().use { output ->
+                inputStream.copyTo(output)
+            }
+
+            // Comprimir el archivo
+            // Reducimos resolución a 800x800 y calidad al 80% para optimizar ancho de banda
+            val compressedFile = Compressor.compress(context, tempFile) {
+                resolution(800, 800)
+                quality(80)
+                default()
+            }
+
+            // Eliminamos el temporal sin comprimir
+            if (tempFile.exists()) tempFile.delete()
+
+            compressedFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
-    return tempFile
 }

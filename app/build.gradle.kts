@@ -73,4 +73,7 @@ dependencies {
 
     // DataStore para persistencia de datos
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Compresor de imágenes
+    implementation("id.zelory:compressor:3.0.1")
 }
