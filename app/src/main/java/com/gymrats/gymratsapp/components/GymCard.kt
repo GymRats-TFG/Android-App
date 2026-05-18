@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,8 +68,8 @@ fun GymCard(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Capacidad Actual", fontSize = 14.sp, fontFamily = poppinsBold)
-                    Text("${(percentage * 100).toInt()}% Full", color = Color(0xFF1A45A0), fontFamily = poppinsBold)
+                    Text(stringResource(R.string.gym_card_current_capacity), fontSize = 14.sp, fontFamily = poppinsBold)
+                    Text("${(percentage * 100).toInt()}% "+stringResource(R.string.gym_card_full_percentage), color = Color(0xFF1A45A0), fontFamily = poppinsBold)
                 }
 
                 LinearProgressIndicator(
@@ -82,7 +83,7 @@ fun GymCard(
                 )
 
                 Text(
-                    text = "$currentCapacity / $maxCapacity miembros",
+                    text = "$currentCapacity / $maxCapacity "+stringResource(R.string.gym_card_members_count),
                     fontSize = 10.sp,
                     fontFamily = poppinsRegular,
                     color = Color.Gray,
