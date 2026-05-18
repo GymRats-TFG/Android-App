@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
+import com.gymrats.gymratsapp.screens.CreateGymScreen
 import com.gymrats.gymratsapp.screens.EditProfileScreen
 import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
 import com.gymrats.gymratsapp.screens.ProfileScreen
@@ -50,11 +51,15 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    val shouldShowBottomBar = currentRoute != "edit_profile"
+    val shouldShowBottomBar = when (currentRoute) {
+        NavBarRoutes.EditProfile.route -> false
+        NavBarRoutes.CreateGym.route -> false
+        else -> true
+    }
 
     Scaffold(
         bottomBar = {
-            if (shouldShowBottomBar) { // Solo se muestra si no estamos editando el perfil
+            if (shouldShowBottomBar) {
                 BottomNavBar(
                     navController = navController,
                     isEnterprise = isEnterprise
@@ -69,7 +74,9 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
         ) {
             composable(NavBarRoutes.Home.route) {
                 if (isEnterprise) {
-                    EnterpriseHomeScreen(authViewModel, gymViewModel)
+                    EnterpriseHomeScreen(authViewModel, gymViewModel,
+                        onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) }
+                    )
                 } else {
                     UserHomeScreen()
                 }
@@ -91,11 +98,12 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
                             }
                         }
                     },
-                    onEditClick = { navController.navigate("edit_profile") }
+                    onEditClick = { navController.navigate(NavBarRoutes.EditProfile.route) },
+                    onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) }
                 )
             }
 
-            composable("edit_profile") {
+            composable(NavBarRoutes.EditProfile.route) {
                 EditProfileScreen(
                     authViewModel = authViewModel,
                     onCloseClick = { navController.popBackStack() },
@@ -103,6 +111,14 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
                         authViewModel.cargarPerfil()
                         navController.popBackStack()
                     }
+                )
+            }
+
+            composable(NavBarRoutes.CreateGym.route) {
+                CreateGymScreen(
+                    gymViewModel = gymViewModel,
+                    onClose = { navController.popBackStack() },
+                    onSuccess = { navController.popBackStack() }
                 )
             }
         }

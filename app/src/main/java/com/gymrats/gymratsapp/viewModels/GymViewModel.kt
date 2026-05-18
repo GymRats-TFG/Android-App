@@ -8,6 +8,11 @@ import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.remote.RetrofitClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
     var gyms by mutableStateOf<List<GymResponse>>(emptyList())
@@ -28,11 +33,57 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
                         errorMessage = "Error al cargar sedes"
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 errorMessage = "Error de conexión"
             } finally {
                 isRefreshing = false
             }
+        }
+    }
+
+    suspend fun registrarSede(
+        name: String,
+        description: String,
+        address: String,
+        phone: String,
+        email: String,
+        price: Double,
+        maxCapacity: Int,
+        imageFile: File?
+    ): Result<String> {
+        return try {
+            val token = sessionManager.userToken.first()
+            if (token.isNullOrEmpty()) return Result.failure(Exception("No token"))
+
+            val namePart = name.toRequestBody("text/plain".toMediaTypeOrNull())
+            val descPart = description.toRequestBody("text/plain".toMediaTypeOrNull())
+            val addrPart = address.toRequestBody("text/plain".toMediaTypeOrNull())
+            val phonePart = phone.toRequestBody("text/plain".toMediaTypeOrNull())
+            val emailPart = email.toRequestBody("text/plain".toMediaTypeOrNull())
+            val pricePart = price.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+            val capPart = maxCapacity.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val imagePart = imageFile?.let {
+                val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
+
+                val fileName = "${name.replace(" ", "_")}_new.png"
+
+                MultipartBody.Part.createFormData("image_file", fileName, requestFile)
+            }
+
+            val response = RetrofitClient.instance.createGym(
+                "Bearer $token", namePart, descPart, addrPart,
+                phonePart, emailPart, pricePart, capPart, imagePart
+            )
+
+            if (response.isSuccessful) {
+                cargarSedes()
+                Result.success("Sede creada correctamente")
+            } else {
+                Result.failure(Exception(response.errorBody()?.string() ?: "Error desconocido"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

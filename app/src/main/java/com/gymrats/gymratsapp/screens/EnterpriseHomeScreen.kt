@@ -33,7 +33,8 @@ import com.gymrats.gymratsapp.viewModels.GymViewModel
 @Composable
 fun EnterpriseHomeScreen(
     authViewModel: AuthViewModel,
-    gymViewModel: GymViewModel
+    gymViewModel: GymViewModel,
+    onCreateGym: () -> Unit,
 ) {
     val user = authViewModel.userProfile
     val gyms = gymViewModel.gyms
@@ -92,7 +93,7 @@ fun EnterpriseHomeScreen(
                     val gym = gyms[index]
                     SedeCard(
                         name = gym.name,
-                        address = gym.address,
+                        address = gym.address?: "Ubicación no disponible.",
                         currentCapacity = gym.current_capacity,
                         maxCapacity = gym.max_capacity,
                         imageUrl = gym.image_url,
@@ -104,7 +105,7 @@ fun EnterpriseHomeScreen(
             }
 
             item {
-                DashedAddButton({})
+                DashedAddButton({ onCreateGym() })
                 Spacer(modifier = Modifier.height(40.dp))
             }
         }

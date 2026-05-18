@@ -38,7 +38,8 @@ fun ProfileScreen(
     authViewModel: AuthViewModel,
     userProfile: UserData?,
     onLogout: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onCreateGym: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         authViewModel.cargarPerfil()
@@ -167,7 +168,7 @@ fun ProfileScreen(
                     }
                 }
                 item { SectionTitle(stringResource(R.string.section_your_locations)) }
-                item { DashedAddButton({}) }
+                item { DashedAddButton({ onCreateGym() }) }
             } else {
                 item {
                     SectionTitle(
