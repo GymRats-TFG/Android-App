@@ -78,8 +78,9 @@ fun GymCard(
                         .fillMaxWidth()
                         .height(10.dp)
                         .clip(RoundedCornerShape(10.dp)),
-                    color = Color(0xFF1A45A0),
-                    trackColor = Color.LightGray.copy(alpha = 0.3f)
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = Color.LightGray.copy(alpha = 0.5f),
+                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                 )
 
                 Text(

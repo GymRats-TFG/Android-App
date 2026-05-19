@@ -53,4 +53,10 @@ interface ApiService {
         @Part("max_capacity") maxCapacity: RequestBody,
         @Part image_file: MultipartBody.Part?
     ): Response<GymCreateResponse>
+
+    @GET("gyms/{gym_id}/members")
+    suspend fun getGymMembers(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String
+    ): Response<List<MemberInfoResponse>>
 }

@@ -1,6 +1,8 @@
 package com.gymrats.gymratsapp.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -35,6 +37,7 @@ fun EnterpriseHomeScreen(
     authViewModel: AuthViewModel,
     gymViewModel: GymViewModel,
     onCreateGym: () -> Unit,
+    onGymClick: (String) -> Unit
 ) {
     val user = authViewModel.userProfile
     val gyms = gymViewModel.gyms
@@ -91,15 +94,19 @@ fun EnterpriseHomeScreen(
             } else {
                 items(gyms.size) { index ->
                     val gym = gyms[index]
-                    GymCard(
-                        name = gym.name,
-                        address = gym.address?: "Ubicación no disponible.",
-                        currentCapacity = gym.current_capacity,
-                        maxCapacity = gym.max_capacity,
-                        imageUrl = gym.image_url,
-                        poppinsBold = poppinsBold,
-                        poppinsRegular = poppinsRegular
-                    )
+                    Box(modifier = Modifier.clickable {
+                        onGymClick(gym.id)
+                    }) {
+                        GymCard(
+                            name = gym.name,
+                            address = gym.address,
+                            currentCapacity = gym.current_capacity,
+                            maxCapacity = gym.max_capacity,
+                            imageUrl = gym.image_url,
+                            poppinsBold = poppinsBold,
+                            poppinsRegular = poppinsRegular
+                        )
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }

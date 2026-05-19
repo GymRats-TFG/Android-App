@@ -80,4 +80,13 @@
     <string name="gym_card_current_capacity">Capacidad Actual</string>
     <string name="gym_card_full_percentage">Full</string>
     <string name="gym_card_members_count">miembros</string>
+
+    <!--  GymDetailScreen  -->
+    <string name="gym_detail_title">Detalles de la sede</string>
+    <string name="gym_detail_edit_button">Editar Sede</string>
+    <string name="gym_detail_section_info">Información</string>
+    <string name="gym_detail_section_members">Socios</string>
+    <string name="gym_detail_contact_info">Contacto</string>
+    <string name="gym_detail_no_description">Sin descripción disponible.</string>
+    <string name="gym_detail_subs_list">Aquí aparecerá la lista de socios inscritos en esta sede.</string>
 </resources>

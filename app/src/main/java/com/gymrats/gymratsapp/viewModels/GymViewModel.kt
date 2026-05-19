@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gymrats.gymratsapp.data.GymResponse
+import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.remote.RetrofitClient
 import kotlinx.coroutines.flow.first
@@ -16,8 +17,16 @@ import java.io.File
 
 class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
     var gyms by mutableStateOf<List<GymResponse>>(emptyList())
+        private set
+
     var isRefreshing by mutableStateOf(false)
+        private set
+
     var errorMessage by mutableStateOf<String?>(null)
+        private set
+
+    var gymMembers by mutableStateOf<List<MemberInfoResponse>>(emptyList())
+        private set
 
     fun cargarSedes() {
         viewModelScope.launch {
@@ -84,6 +93,22 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    fun cargarMiembrosGym(gymId: String) {
+        viewModelScope.launch {
+            try {
+                val token = sessionManager.userToken.first()
+                if (!token.isNullOrEmpty()) {
+                    val response = RetrofitClient.instance.getGymMembers("Bearer $token", gymId)
+                    if (response.isSuccessful) {
+                        gymMembers = response.body() ?: emptyList()
+                    }
+                }
+            } catch (_: Exception) {
+                errorMessage = "Error al cargar los socios"
+            }
         }
     }
 }
