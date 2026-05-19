@@ -1,10 +1,13 @@
 package com.gymrats.gymratsapp.viewModels
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.data.MemberInfoResponse
+import com.gymrats.gymratsapp.data.MemberLinkRequest
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.remote.RetrofitClient
 import kotlinx.coroutines.flow.first
@@ -14,6 +17,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.time.LocalDate
 
 class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
     var gyms by mutableStateOf<List<GymResponse>>(emptyList())
@@ -26,6 +30,9 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
         private set
 
     var gymMembers by mutableStateOf<List<MemberInfoResponse>>(emptyList())
+        private set
+
+    var selectedGym by mutableStateOf<GymResponse?>(null)
         private set
 
     fun cargarSedes() {
@@ -97,6 +104,7 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
     }
 
     fun cargarMiembrosGym(gymId: String) {
+        isRefreshing = true
         viewModelScope.launch {
             try {
                 val token = sessionManager.userToken.first()
@@ -108,7 +116,68 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
                 }
             } catch (_: Exception) {
                 errorMessage = "Error al cargar los socios"
+            } finally {
+                isRefreshing = false
             }
+        }
+    }
+
+    fun cargarDatosDetalle(gymId: String, isEnterprise: Boolean) {
+        viewModelScope.launch {
+            isRefreshing = true
+            try {
+                val token = sessionManager.userToken.first()
+                if (!token.isNullOrEmpty()) {
+                    val gymRes = RetrofitClient.instance.getGym("Bearer $token", gymId)
+                    if (gymRes.isSuccessful) {
+                        selectedGym = gymRes.body()
+                    }
+
+                    if (isEnterprise) {
+                        val membersRes = RetrofitClient.instance.getGymMembers("Bearer $token", gymId)
+                        if (membersRes.isSuccessful) {
+                            gymMembers = membersRes.body() ?: emptyList()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage = "Error al actualizar datos"
+            } finally {
+                isRefreshing = false
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun vincularSocio(gymId: String, identifier: String): Result<String> {
+        return try {
+            val token = sessionManager.userToken.first()
+            if (token.isNullOrEmpty()) return Result.failure(Exception("No token"))
+
+            // Fechas por defecto: Hoy hasta dentro de 1 mes
+            val hoy = LocalDate.now().toString()
+            val mesSiguiente = LocalDate.now().plusMonths(1).toString()
+
+            // Creamos la request. Probamos por username si no parece un UUID,
+            // pero tu backend maneja ambos. Aquí lo mandamos como username por defecto:
+            val request = MemberLinkRequest(
+                gym_id = gymId,
+                username = identifier, // Mandamos el texto del input aquí
+                start_date = hoy,
+                expiration_date = mesSiguiente
+            )
+
+            val response = RetrofitClient.instance.addMemberToGym("Bearer $token", request)
+
+            if (response.isSuccessful) {
+                cargarMiembrosGym(gymId) // Recargamos la lista automáticamente
+                Result.success("Socio vinculado correctamente")
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Error al vincular"
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

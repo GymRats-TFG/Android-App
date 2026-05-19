@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
+import com.gymrats.gymratsapp.components.MemberItem
 import com.gymrats.gymratsapp.components.SectionTitle
 import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.viewModels.GymViewModel
@@ -35,7 +37,8 @@ fun GymDetailScreen(
     gym: GymResponse,
     isEnterprise: Boolean,
     onBack: () -> Unit,
-    gymViewModel: GymViewModel
+    gymViewModel: GymViewModel,
+    onManageMembers: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val poppinsBold = FontFamily(Font(R.font.poppins_bold))
@@ -49,6 +52,7 @@ fun GymDetailScreen(
     }
 
     val members = gymViewModel.gymMembers
+    val isRefreshing = gymViewModel.isRefreshing
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -89,190 +93,138 @@ fun GymDetailScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { gymViewModel.cargarDatosDetalle(gym.id, isEnterprise) },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(scrollState)
         ) {
-            AsyncImage(
-                model = gym.image_url ?: R.drawable.gymrats_logo,
-                contentDescription = null,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            Column(modifier = Modifier.padding(24.dp)) {
-                Text(
-                    text = gym.name,
-                    fontSize = 28.sp,
-                    fontFamily = poppinsBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Icon(Icons.Default.LocationOn, null, Modifier.size(18.dp), tint = Color.Gray)
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        gym.address,
-                        fontSize = 14.sp,
-                        fontFamily = poppinsRegular,
-                        color = Color.Gray
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                val percentage =
-                    if (gym.max_capacity > 0) gym.current_capacity.toFloat() / gym.max_capacity.toFloat() else 0f
-
-                Text(
-                    stringResource(R.string.gym_card_current_capacity),
-                    fontSize = 14.sp,
-                    fontFamily = poppinsBold
-                )
-                Spacer(Modifier.height(8.dp))
-                LinearProgressIndicator(
-                    progress = { percentage },
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
+                AsyncImage(
+                    model = gym.image_url ?: R.drawable.gymrats_logo,
+                    contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(12.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = Color.LightGray.copy(alpha = 0.4f),
-                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
-                )
-                Text(
-                    text = "${gym.current_capacity} / ${gym.max_capacity} ${stringResource(R.string.gym_card_members_count)}",
-                    fontSize = 12.sp,
-                    fontFamily = poppinsRegular,
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 4.dp)
+                        .height(250.dp),
+                    contentScale = ContentScale.Crop
                 )
 
-                HorizontalDivider(
-                    Modifier.padding(vertical = 8.dp),
-                    thickness = 0.5.dp,
-                    color = Color.LightGray
-                )
+                Column(modifier = Modifier.padding(24.dp)) {
+                    Text(
+                        text = gym.name,
+                        fontSize = 28.sp,
+                        fontFamily = poppinsBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
 
-                SectionTitle(stringResource(R.string.gym_detail_section_info))
-                Text(
-                    text = gym.description ?: stringResource(R.string.gym_detail_no_description),
-                    fontSize = 15.sp,
-                    fontFamily = poppinsRegular,
-                    modifier = Modifier.padding(bottom = 12.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                InfoBadge(
-                    icon = Icons.Default.Payments,
-                    text = gym.price.toString() + "€ / mes",
-                    fontFamily = poppinsBold,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-
-                SectionTitle(stringResource(R.string.gym_detail_contact_info))
-                ContactItem(Icons.Default.Email, gym.email, poppinsRegular)
-                ContactItem(Icons.Default.Phone, gym.phone, poppinsRegular)
-
-                if (isEnterprise) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 8.dp)
                     ) {
-                        SectionTitle(stringResource(R.string.gym_detail_section_members), true)
+                        Icon(Icons.Default.LocationOn, null, Modifier.size(18.dp), tint = Color.Gray)
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            gym.address,
+                            fontSize = 14.sp,
+                            fontFamily = poppinsRegular,
+                            color = Color.Gray
+                        )
                     }
-                    if (members.isEmpty()) {
-                        Card(
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val percentage =
+                        if (gym.max_capacity > 0) gym.current_capacity.toFloat() / gym.max_capacity.toFloat() else 0f
+
+                    Text(
+                        stringResource(R.string.gym_card_current_capacity),
+                        fontSize = 14.sp,
+                        fontFamily = poppinsBold
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    LinearProgressIndicator(
+                        progress = { percentage },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(12.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = Color.LightGray.copy(alpha = 0.4f),
+                        strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                    )
+                    Text(
+                        text = "${gym.current_capacity} / ${gym.max_capacity} ${stringResource(R.string.gym_card_members_count)}",
+                        fontSize = 12.sp,
+                        fontFamily = poppinsRegular,
+                        color = Color.Gray,
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 4.dp)
+                    )
+
+                    HorizontalDivider(
+                        Modifier.padding(vertical = 8.dp),
+                        thickness = 0.5.dp,
+                        color = Color.LightGray
+                    )
+
+                    SectionTitle(stringResource(R.string.gym_detail_section_info))
+                    Text(
+                        text = gym.description ?: stringResource(R.string.gym_detail_no_description),
+                        fontSize = 15.sp,
+                        fontFamily = poppinsRegular,
+                        modifier = Modifier.padding(bottom = 12.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    InfoBadge(
+                        icon = Icons.Default.Payments,
+                        text = gym.price.toString() + "€ / mes",
+                        fontFamily = poppinsBold,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+
+                    SectionTitle(stringResource(R.string.gym_detail_contact_info))
+                    ContactItem(Icons.Default.Email, gym.email, poppinsRegular)
+                    ContactItem(Icons.Default.Phone, gym.phone, poppinsRegular)
+
+                    if (isEnterprise) {
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary
-                            )
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                stringResource(R.string.gym_detail_subs_list),
-                                fontSize = 14.sp,
-                                fontFamily = poppinsRegular,
-                                modifier = Modifier.padding(16.dp),
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
+                            SectionTitle(stringResource(R.string.gym_detail_section_members), true, { onManageMembers(gym.id) })
                         }
-                    } else {
-                        members.forEach { member ->
+                        if (members.isEmpty()) {
                             Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                        alpha = 0.3f
-                                    )
+                                    containerColor = MaterialTheme.colorScheme.onPrimary
                                 )
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(12.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    AsyncImage(
-                                        model = member.avatar_url ?: R.drawable.gymrats_logo,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(45.dp)
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop
-                                    )
-
-                                    Spacer(Modifier.width(12.dp))
-
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(
-                                            text = member.name ?: member.username,
-                                            fontFamily = poppinsBold,
-                                            fontSize = 14.sp,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
-                                        Text(
-                                            text = "@${member.username}",
-                                            fontFamily = poppinsRegular,
-                                            fontSize = 12.sp,
-                                            color = Color.Gray
-                                        )
-                                    }
-
-                                    Surface(
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        shape = RoundedCornerShape(8.dp)
-                                    ) {
-                                        Text(
-                                            text = member.status.uppercase(),
-                                            modifier = Modifier.padding(
-                                                horizontal = 8.dp,
-                                                vertical = 4.dp
-                                            ),
-                                            fontSize = 10.sp,
-                                            fontFamily = poppinsBold,
-                                            color = if (member.status == "active") Color(0xFF2E7D32) else Color(
-                                                0xFFC62828
-                                            )
-                                        )
-                                    }
-                                }
+                                Text(
+                                    stringResource(R.string.gym_detail_subs_list),
+                                    fontSize = 14.sp,
+                                    fontFamily = poppinsRegular,
+                                    modifier = Modifier.padding(16.dp),
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        } else {
+                            members.forEach { member ->
+                                MemberItem(member)
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(60.dp))
                 }
-                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }

@@ -87,7 +87,8 @@ fun CreateGymScreen(
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(R.string.action_close),
-                        modifier = Modifier.size(28.dp).clickable { onClose() }
+                        modifier = Modifier.size(28.dp).clickable { onClose() },
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }

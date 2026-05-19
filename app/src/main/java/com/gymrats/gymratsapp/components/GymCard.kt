@@ -45,7 +45,7 @@ fun GymCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
     ) {
         Column {
             AsyncImage(
@@ -60,12 +60,14 @@ fun GymCard(
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(name, fontSize = 18.sp, fontFamily = poppinsBold, color = MaterialTheme.colorScheme.onSurface)
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.LocationOn, null, Modifier.size(14.dp), tint = Color.Gray)
                     Text(address, fontSize = 12.sp, fontFamily = poppinsRegular, color = Color.Gray)
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(stringResource(R.string.gym_card_current_capacity), fontSize = 14.sp, fontFamily = poppinsBold)

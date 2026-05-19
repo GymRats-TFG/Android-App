@@ -29,6 +29,7 @@ import com.gymrats.gymratsapp.screens.CreateGymScreen
 import com.gymrats.gymratsapp.screens.EditProfileScreen
 import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
 import com.gymrats.gymratsapp.screens.GymDetailScreen
+import com.gymrats.gymratsapp.screens.ManageMembersScreen
 import com.gymrats.gymratsapp.screens.ProfileScreen
 import com.gymrats.gymratsapp.screens.QRScreen
 import com.gymrats.gymratsapp.screens.ScannerScreen
@@ -60,6 +61,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
         NavBarRoutes.EditProfile.route -> false
         NavBarRoutes.CreateGym.route -> false
         "${NavBarRoutes.GymDetail.route}/{gymId}" -> false
+        "${NavBarRoutes.ManageMembers.route}/{gymId}" -> false
         else -> true
     }
 
@@ -142,16 +144,31 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                 val gymId = backStackEntry.arguments?.getString("gymId")
 
                 // Buscamos el objeto gym en la lista del ViewModel usando el ID
-                val gym = gymViewModel.gyms.find { it.id.toString() == gymId }
+                val gym = gymViewModel.gyms.find { it.id == gymId }
 
                 if (gym != null) {
                     GymDetailScreen(
                         gym = gym,
                         isEnterprise = authViewModel.isEnterprise ?: false,
                         onBack = { navController.popBackStack() },
-                        gymViewModel = gymViewModel
+                        gymViewModel = gymViewModel,
+                        onManageMembers = { id ->
+                            navController.navigate("${NavBarRoutes.ManageMembers.route}/$id")
+                        }
                     )
                 }
+            }
+
+            composable(
+                route = "${NavBarRoutes.ManageMembers.route}/{gymId}",
+                arguments = listOf(navArgument("gymId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val gymId = backStackEntry.arguments?.getString("gymId") ?: ""
+                ManageMembersScreen(
+                    gymId = gymId,
+                    gymViewModel = gymViewModel,
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }
