@@ -1,5 +1,13 @@
 package com.gymrats.gymratsapp.data
 
+data class SignupResponse(
+    val message: String,
+    val user: UserData,
+    val access_token: String,
+    val token_type: String,
+    val is_enterprise: Boolean
+)
+
 data class LoginResponse(
     val access_token: String,
     val token_type: String,

@@ -18,7 +18,7 @@ interface ApiService {
     @POST("signup")
     suspend fun signup(
         @Body request: SignupRequest
-    ): Response<UserData>
+    ): Response<SignupResponse>
 
     @GET("users/me")
     suspend fun getMyProfile(

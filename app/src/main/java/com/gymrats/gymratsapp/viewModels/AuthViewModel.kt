@@ -82,10 +82,11 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                     if (userData != null) {
                         val isEnt = userData.is_enterprise
 
+                        sessionManager.saveToken(userData.access_token)
                         sessionManager.saveIsEnterprise(userData.is_enterprise)
 
                         this@AuthViewModel.isEnterprise = isEnt
-                        userProfile = userData
+                        userProfile = userData.user
 
                         success = true
                     }
