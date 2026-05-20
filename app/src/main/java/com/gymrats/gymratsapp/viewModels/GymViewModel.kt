@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gymrats.gymratsapp.data.EnterpriseStats
 import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.data.MemberLinkRequest
@@ -34,6 +35,9 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
         private set
 
     var selectedGym by mutableStateOf<GymResponse?>(null)
+        private set
+
+    var enterpriseStats by mutableStateOf<EnterpriseStats?>(null)
         private set
 
     fun cargarSedes() {
@@ -256,6 +260,22 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    fun cargarStatsEnterprise() {
+        viewModelScope.launch {
+            try {
+                val token = sessionManager.userToken.first()
+                if (!token.isNullOrEmpty()) {
+                    val response = RetrofitClient.instance.getEnterpriseStats("Bearer $token")
+                    if (response.isSuccessful) {
+                        enterpriseStats = response.body()
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage = "Error al cargar estadísticas"
+            }
         }
     }
 }

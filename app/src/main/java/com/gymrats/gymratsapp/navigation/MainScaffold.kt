@@ -101,6 +101,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
             composable(NavBarRoutes.Profile.route) {
                 ProfileScreen(
                     authViewModel = authViewModel,
+                    gymViewModel = gymViewModel,
                     userProfile = authViewModel.userProfile,
                     onLogout = {
                         scope.launch {

@@ -43,3 +43,9 @@ data class SubscriptionUpdateRequest(
     val start_date: String,
     val expiration_date: String
 )
+
+data class EnterpriseStats(
+    val total_gyms: Int,
+    val active_subscribers: Int,
+    val total_current_capacity: Int
+)

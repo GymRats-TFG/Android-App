@@ -31,17 +31,24 @@ import com.gymrats.gymratsapp.components.StatCard
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.data.UserData
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
+import com.gymrats.gymratsapp.viewModels.GymViewModel
 
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
+    gymViewModel: GymViewModel,
     userProfile: UserData?,
     onLogout: () -> Unit,
     onEditClick: () -> Unit,
     onCreateGym: () -> Unit,
 ) {
+    val stats = gymViewModel.enterpriseStats
+
     LaunchedEffect(Unit) {
         authViewModel.cargarPerfil()
+        if (userProfile?.is_enterprise == true) {
+            gymViewModel.cargarStatsEnterprise()
+        }
     }
 
     LaunchedEffect(authViewModel.errorMessage) {
@@ -153,13 +160,13 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         StatCard(
-                            stringResource(R.string.stat_total_locations),
-                            "0",
+                            stringResource(R.string.stat_active_subscribers),
+                            value = stats?.active_subscribers?.toString() ?: "0",
                             Modifier.weight(1f)
                         )
                         StatCard(
-                            stringResource(R.string.stat_active_subscribers),
-                            "0",
+                            stringResource(R.string.stat_total_capacity),
+                            value = stats?.total_current_capacity?.toString() ?: "0",
                             Modifier.weight(1f)
                         )
                     }

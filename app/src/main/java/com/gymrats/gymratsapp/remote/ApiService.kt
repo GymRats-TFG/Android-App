@@ -99,4 +99,9 @@ interface ApiService {
         @Part("max_capacity") maxCapacity: RequestBody?,
         @Part image_file: MultipartBody.Part?
     ): Response<GymCreateResponse>
+
+    @GET("gyms/stats/summary")
+    suspend fun getEnterpriseStats(
+        @Header("Authorization") token: String
+    ): Response<EnterpriseStats>
 }
