@@ -117,7 +117,10 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                         }
                     },
                     onEditClick = { navController.navigate(NavBarRoutes.EditProfile.route) },
-                    onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) }
+                    onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) },
+                    onGymClick = { gymId ->
+                        navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
+                    }
                 )
             }
 

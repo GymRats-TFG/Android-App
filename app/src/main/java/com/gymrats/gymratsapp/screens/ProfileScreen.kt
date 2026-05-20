@@ -26,6 +26,7 @@ import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.components.DashedAddButton
 import com.gymrats.gymratsapp.components.EmptyStateCard
+import com.gymrats.gymratsapp.components.GymCardSmall
 import com.gymrats.gymratsapp.components.SectionTitle
 import com.gymrats.gymratsapp.components.StatCard
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
@@ -41,13 +42,16 @@ fun ProfileScreen(
     onLogout: () -> Unit,
     onEditClick: () -> Unit,
     onCreateGym: () -> Unit,
+    onGymClick: (String) -> Unit
 ) {
     val stats = gymViewModel.enterpriseStats
+    val gyms = gymViewModel.gyms
 
     LaunchedEffect(Unit) {
         authViewModel.cargarPerfil()
         if (userProfile?.is_enterprise == true) {
             gymViewModel.cargarStatsEnterprise()
+            gymViewModel.cargarSedes()
         }
     }
 
@@ -172,7 +176,25 @@ fun ProfileScreen(
                     }
                 }
                 item { SectionTitle(stringResource(R.string.section_your_locations)) }
-                item { DashedAddButton({ onCreateGym() }) }
+
+                if (gyms.isEmpty()) {
+                    item { EmptyStateCard(stringResource(R.string.empty_no_locations)) }
+                } else {
+                    items(gyms.size) { index ->
+                        val gym = gyms[index]
+                        GymCardSmall(
+                            name = gym.name,
+                            currentCapacity = gym.current_capacity,
+                            imageUrl = gym.image_url,
+                            onClick = { onGymClick(gym.id) }
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
+
+                item {
+                    DashedAddButton({ onCreateGym() })
+                }
             } else {
                 item {
                     SectionTitle(

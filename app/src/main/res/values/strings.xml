@@ -77,7 +77,7 @@
     <string name="error_location_not_found">No se ha podido localizar la ubicación</string>
 
     <!--  GymCard  -->
-    <string name="gym_card_current_capacity">Capacidad Actual</string>
+    <string name="gym_card_current_capacity">Aforo Actual</string>
     <string name="gym_card_full_percentage">Full</string>
     <string name="gym_card_members_count">miembros</string>
 
