@@ -44,10 +44,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getString
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.viewModels.GymViewModel
@@ -101,13 +103,13 @@ fun EditGymScreen(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Editar Sede", fontSize = 28.sp, fontFamily = poppinsSemiBold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.weight(
+            Text(stringResource(R.string.edit_gym), fontSize = 28.sp, fontFamily = poppinsSemiBold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.weight(
                 1f
             ))
             IconButton(onClick = { if (hasChanges) showDialog = true else onClose() }) {
-                Icon(Icons.Filled.Close, null, modifier = Modifier.size(28.dp))
+                Icon(Icons.Filled.Close, null, modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.primary)
             }
         }
 
@@ -135,22 +137,22 @@ fun EditGymScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = name, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { name = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = name, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { name = it }, label = { Text(stringResource(R.string.label_gym_name)) }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = description, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { description = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = description, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { description = it }, label = { Text(stringResource(R.string.label_gym_description_optional)) }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = address, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { address = it }, label = { Text("Dirección") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = address, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { address = it }, label = { Text(stringResource(R.string.label_gym_address)) }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = phone,singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { phone = it }, label = { Text("Teléfono") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = phone,singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { phone = it }, label = { Text(stringResource(R.string.label_phone)) }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = email, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = email, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { email = it }, label = { Text(stringResource(R.string.label_email_contact)) }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth()) {
-            OutlinedTextField(value = price, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { price = it }, label = { Text("Precio (€)") }, modifier = Modifier.weight(
+            OutlinedTextField(value = price, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { price = it }, label = { Text(stringResource(R.string.label_price_euro)) }, modifier = Modifier.weight(
                 1f
             ))
             Spacer(Modifier.width(8.dp))
-            OutlinedTextField(value = maxCapacity, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { maxCapacity = it }, label = { Text("Aforo Máx") }, modifier = Modifier.weight(
+            OutlinedTextField(value = maxCapacity, singleLine = true, shape = RoundedCornerShape(8.dp), onValueChange = { maxCapacity = it }, label = { Text(stringResource(R.string.label_max_capacity)) }, modifier = Modifier.weight(
                 1f
             ))
         }
@@ -175,7 +177,7 @@ fun EditGymScreen(
                     )
                     isLoading = false
                     result.onSuccess {
-                        Toast.makeText(context, "Sede actualizada", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(context,R.string.gym_updated), Toast.LENGTH_SHORT).show()
                         onSuccess()
                     }.onFailure {
                         Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
@@ -191,7 +193,7 @@ fun EditGymScreen(
             if (isLoading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(
                 24.dp
             ))
-            else Text("GUARDAR CAMBIOS", fontFamily = poppinsSemiBold)
+            else Text(stringResource(R.string.save_changes), fontFamily = poppinsSemiBold)
         }
         Spacer(modifier = Modifier.height(32.dp))
     }
@@ -199,10 +201,10 @@ fun EditGymScreen(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Cambios sin guardar") },
-            text = { Text("¿Deseas descartar los cambios?") },
-            confirmButton = { TextButton(onClick = { onClose() }) { Text("Descartar", color = Color.Red) } },
-            dismissButton = { TextButton(onClick = { showDialog = false }) { Text("Seguir editando") } }
+            title = { Text(stringResource(R.string.changes_not_saved)) },
+            text = { Text(stringResource(R.string.discard_changes)) },
+            confirmButton = { TextButton(onClick = { onClose() }) { Text(stringResource(R.string.dialog_action_discard), color = Color.Red) } },
+            dismissButton = { TextButton(onClick = { showDialog = false }) { Text(stringResource(R.string.keep_editing)) } }
         )
     }
 }

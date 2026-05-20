@@ -65,14 +65,14 @@
     <string name="create_gym_title">Nueva Sede</string>
     <string name="label_add_gym_image">Añadir imagen de la sede</string>
     <string name="label_gym_name">Nombre del gimnasio</string>
-    <string name="label_gym_address">Dirección completa *</string>
+    <string name="label_gym_address">Dirección completa</string>
     <string name="label_max_capacity">Aforo máximo</string>
     <string name="button_create_gym">CREAR SEDE</string>
-    <string name="label_gym_description_optional">Descripción (Opcional)</string>
-    <string name="label_phone">Teléfono *</string>
-    <string name="label_email_contact">Email de contacto *</string>
-    <string name="label_price_euro">Precio (€) *</string>
-    <string name="label_max_capacity_short">Aforo máx. *</string>
+    <string name="label_gym_description_optional">Descripción</string>
+    <string name="label_phone">Teléfono</string>
+    <string name="label_email_contact">Email de contacto</string>
+    <string name="label_price_euro">Precio (€)</string>
+    <string name="label_max_capacity_short">Aforo máx.</string>
     <string name="gym_created">¡Sede creada correctamente!</string>
     <string name="error_location_not_found">No se ha podido localizar la ubicación</string>
 
@@ -109,4 +109,12 @@
     <string name="manager_members_sure_remove_msg2">Esta acción no se puede deshacer.</string>
     <string name="remove">ELIMINAR</string>
     <string name="accept">ACEPTAR</string>
+
+    <!--  EditGymScreen  -->
+    <string name="edit_gym">Editar Sede</string>
+    <string name="gym_updated">Sede actualizada</string>
+    <string name="save_changes">GUARDAR CAMBIOS</string>
+    <string name="changes_not_saved">Cambios sin guardar</string>
+    <string name="discard_changes">¿Deseas descartar los cambios?</string>
+    <string name="keep_editing">Seguir editando</string>
 </resources>
