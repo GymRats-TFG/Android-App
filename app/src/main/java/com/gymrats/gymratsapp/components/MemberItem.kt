@@ -62,7 +62,7 @@ fun MemberItem(
                     Text("@${member.username}", fontFamily = poppinsRegular, fontSize = 12.sp, color = Color.Gray)
                 }
                 Surface(
-                    color = if (member.status == "active") Color(0xFFE8F5E9) else Color(0xFFFFEBEE),
+                    color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(

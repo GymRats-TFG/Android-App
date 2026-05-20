@@ -2,14 +2,14 @@ package com.gymrats.gymratsapp.screens
 
 import android.os.Build
 import android.widget.Toast
-import androidx.activity.result.launch
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.QrCodeScanner
 import androidx.compose.material.icons.rounded.PersonAdd
@@ -20,22 +20,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.components.MemberItem
 import com.gymrats.gymratsapp.components.SectionTitle
 import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.viewModels.GymViewModel
 import kotlinx.coroutines.launch
+import kotlin.text.contains
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +65,20 @@ fun ManageMembersScreen(
     var memberToEdit by remember { mutableStateOf<MemberInfoResponse?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
 
+    // Filtrar
+    var filterQuery by remember { mutableStateOf("") }
+    var isSearchExpanded by remember { mutableStateOf(false) }
+    val filteredMembers = remember(filterQuery, members) {
+        if (filterQuery.isEmpty()) {
+            members
+        } else {
+            members.filter {
+                it.username.contains(filterQuery, ignoreCase = true) ||
+                        it.id.contains(filterQuery, ignoreCase = true) ||
+                        (it.name?.contains(filterQuery, ignoreCase = true) ?: false)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -103,7 +115,11 @@ fun ManageMembersScreen(
     ) { padding ->
         PullToRefreshBox(
             isRefreshing = isRefreshing,
-            onRefresh = { gymViewModel.cargarMiembrosGym(gymId) },
+            onRefresh = {
+                filterQuery = ""
+                isSearchExpanded = false
+                gymViewModel.cargarMiembrosGym(gymId)
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
@@ -163,8 +179,50 @@ fun ManageMembersScreen(
                             }
                         }
                     )
+                }
 
-                    SectionTitle(stringResource(R.string.manage_members_current_list))
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            stringResource(R.string.manage_members_current_list),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 18.sp,
+                            fontFamily = poppinsSemiBold
+                        )
+                        IconButton(onClick = {
+                            isSearchExpanded = !isSearchExpanded
+                            filterQuery = ""
+                        }) {
+                            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.manage_members_filter), tint = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+
+                    if (isSearchExpanded) {
+                        OutlinedTextField(
+                            value = filterQuery,
+                            onValueChange = { filterQuery = it },
+                            label = { Text(stringResource(R.string.manage_members_filter)) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    filterQuery = ""
+                                    isSearchExpanded = false
+                                }) {
+                                    Icon(Icons.Default.Close, null, modifier = Modifier.size(20.dp))
+                                }
+                            }
+                        )
+                    }
+
+                    Spacer(Modifier.height(8.dp))
                 }
 
                 if (members.isEmpty()) {
@@ -186,20 +244,41 @@ fun ManageMembersScreen(
                         }
                     }
                 } else {
-                    items(members.size) { index ->
-                        val member = members[index]
-                        MemberItem(
-                            member = member,
-                            showManagementOptions = true,
-                            onEditExpiration = {
-                                memberToEdit = it
-                                showDatePicker = true
-                            },
-                            onDeleteMember = {
-                                memberToDelete = it
-                                showDeleteDialog = true
+                    if (filteredMembers.isEmpty()) {
+                        item {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            ) {
+                                Text(
+                                    if (filterQuery.isEmpty()) stringResource(R.string.gym_detail_subs_list)
+                                    else stringResource(R.string.manage_members_no_results),
+                                    fontSize = 14.sp,
+                                    fontFamily = poppinsRegular,
+                                    modifier = Modifier.padding(16.dp),
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
                             }
-                        )
+                        }
+                    } else {
+                        items(filteredMembers.size) { index ->
+                            val member = filteredMembers[index]
+                            MemberItem(
+                                member = member,
+                                showManagementOptions = true,
+                                onEditExpiration = {
+                                    memberToEdit = it
+                                    showDatePicker = true
+                                },
+                                onDeleteMember = {
+                                    memberToDelete = it
+                                    showDeleteDialog = true
+                                }
+                            )
+                        }
                     }
                 }
 

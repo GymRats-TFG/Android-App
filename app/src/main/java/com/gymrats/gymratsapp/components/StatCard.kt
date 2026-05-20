@@ -11,14 +11,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gymrats.gymratsapp.R
 
 @Composable
 fun StatCard(label: String, value: String, modifier: Modifier) {
     Card(
-        modifier = modifier.height(110.dp),
+        modifier = modifier.height(132.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
     ) {
@@ -26,15 +29,15 @@ fun StatCard(label: String, value: String, modifier: Modifier) {
             Text(
                 label,
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold
+                fontSize = 12.sp,
+                fontFamily = FontFamily(Font(R.font.poppins_semibold))
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 value,
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = 32.sp,
-                fontWeight = FontWeight.Bold
+                fontFamily = FontFamily(Font(R.font.poppins_bold))
             )
         }
     }
