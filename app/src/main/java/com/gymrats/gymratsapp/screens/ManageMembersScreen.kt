@@ -215,13 +215,15 @@ fun ManageMembersScreen(
             onDismissRequest = { showDeleteDialog = false },
             title = {
                 Text(
-                    "Eliminar socio",
+                    stringResource(R.string.manager_members_remove_sub),
                     fontFamily = poppinsSemiBold
                 )
             },
             text = {
                 Text(
-                    "¿Estás seguro de que deseas eliminar a @${memberToDelete?.username}? Esta acción no se puede deshacer.",
+                    stringResource(R.string.manager_members_sure_remove_msg1)+
+                    " @${memberToDelete?.username}? "
+                    +stringResource(R.string.manager_members_sure_remove_msg2),
                     fontFamily = poppinsRegular
                 )
             },
@@ -241,12 +243,12 @@ fun ManageMembersScreen(
                         }
                     }
                 ) {
-                    Text("ELIMINAR", color = Color.Red, fontFamily = poppinsBold)
+                    Text(stringResource(R.string.remove), color = Color.Red, fontFamily = poppinsBold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("CANCELAR", fontFamily = poppinsBold)
+                    Text(stringResource(R.string.cancel), fontFamily = poppinsBold)
                 }
             }
         )
@@ -283,12 +285,12 @@ fun ManageMembersScreen(
                     }
                     showDatePicker = false
                 }) {
-                    Text("ACEPTAR", fontFamily = poppinsBold)
+                    Text(stringResource(R.string.accept), fontFamily = poppinsBold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("CANCELAR", fontFamily = poppinsBold)
+                    Text(stringResource(R.string.cancel), fontFamily = poppinsBold)
                 }
             }
         ) {
