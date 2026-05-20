@@ -71,4 +71,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: MemberLinkRequest
     ): Response<Unit>
+
+    @PATCH("subscriptions/{subscription_id}")
+    suspend fun updateSubscription(
+        @Header("Authorization") token: String,
+        @Path("subscription_id") subscriptionId: String,
+        @Body request: SubscriptionUpdateRequest
+    ): Response<Unit>
+
+    @DELETE("subscriptions/{subscription_id}")
+    suspend fun deleteSubscription(
+        @Header("Authorization") token: String,
+        @Path("subscription_id") subscriptionId: String
+    ): Response<Unit>
 }

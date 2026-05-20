@@ -9,6 +9,7 @@ import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.data.MemberLinkRequest
 import com.gymrats.gymratsapp.data.SessionManager
+import com.gymrats.gymratsapp.data.SubscriptionUpdateRequest
 import com.gymrats.gymratsapp.remote.RetrofitClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -159,10 +160,9 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             val mesSiguiente = LocalDate.now().plusMonths(1).toString()
 
             // Creamos la request. Probamos por username si no parece un UUID,
-            // pero tu backend maneja ambos. Aquí lo mandamos como username por defecto:
             val request = MemberLinkRequest(
                 gym_id = gymId,
-                username = identifier, // Mandamos el texto del input aquí
+                username = identifier,
                 start_date = hoy,
                 expiration_date = mesSiguiente
             )
@@ -179,5 +179,35 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun actualizarSuscripcion(gymId: String, member: MemberInfoResponse, nuevaExpiracion: String): Result<String> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+
+            val request = SubscriptionUpdateRequest(member.status, member.start_date, expiration_date = nuevaExpiracion)
+            val response = RetrofitClient.instance.updateSubscription("Bearer $token", member.subscription_id, request)
+
+            if (response.isSuccessful) {
+                cargarMiembrosGym(gymId)
+                Result.success("Suscripción actualizada")
+            } else {
+                Result.failure(Exception("Error al actualizar"))
+            }
+        } catch (e: Exception) { Result.failure(e) }
+    }
+
+    suspend fun eliminarSocio(gymId: String, subscriptionId: String): Result<String> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+            val response = RetrofitClient.instance.deleteSubscription("Bearer $token", subscriptionId)
+            if (response.isSuccessful) {
+                cargarMiembrosGym(gymId) // Recargar lista
+                Result.success("Socio eliminado correctamente")
+            } else {
+                Result.failure(Exception("Error al eliminar"))
+            }
+        } catch (e: Exception) { Result.failure(e) }
     }
 }

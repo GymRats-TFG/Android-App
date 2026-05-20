@@ -1,7 +1,9 @@
 package com.gymrats.gymratsapp.screens
 
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.result.launch
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,9 +33,11 @@ import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.components.MemberItem
 import com.gymrats.gymratsapp.components.SectionTitle
+import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.viewModels.GymViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageMembersScreen(
@@ -54,6 +58,15 @@ fun ManageMembersScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var isAdding by remember { mutableStateOf(false) }
+
+    // Eliminar
+    var memberToDelete by remember { mutableStateOf<MemberInfoResponse?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    // Editar
+    var memberToEdit by remember { mutableStateOf<MemberInfoResponse?>(null) }
+    var showDatePicker by remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
@@ -175,13 +188,111 @@ fun ManageMembersScreen(
                 } else {
                     items(members.size) { index ->
                         val member = members[index]
-                        MemberItem(member)
+                        MemberItem(
+                            member = member,
+                            showManagementOptions = true,
+                            onEditExpiration = {
+                                memberToEdit = it
+                                showDatePicker = true
+                            },
+                            onDeleteMember = {
+                                memberToDelete = it
+                                showDeleteDialog = true
+                            }
+                        )
                     }
                 }
 
                 // Espacio extra al final para scroll cómodo
                 item { Spacer(modifier = Modifier.height(40.dp)) }
             }
+        }
+    }
+
+    // Eliminar
+    if (showDeleteDialog && memberToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = {
+                Text(
+                    "Eliminar socio",
+                    fontFamily = poppinsSemiBold
+                )
+            },
+            text = {
+                Text(
+                    "¿Estás seguro de que deseas eliminar a @${memberToDelete?.username}? Esta acción no se puede deshacer.",
+                    fontFamily = poppinsRegular
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        scope.launch {
+                            showDeleteDialog = false
+                            val result = gymViewModel.eliminarSocio(gymId, memberToDelete!!.subscription_id)
+
+                            result.onSuccess {
+                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                            }.onFailure {
+                                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                            }
+                            memberToDelete = null
+                        }
+                    }
+                ) {
+                    Text("ELIMINAR", color = Color.Red, fontFamily = poppinsBold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("CANCELAR", fontFamily = poppinsBold)
+                }
+            }
+        )
+    }
+
+    // Editar
+    if (showDatePicker && memberToEdit != null) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = System.currentTimeMillis()
+        )
+
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    val selectedDateMillis = datePickerState.selectedDateMillis
+                    if (selectedDateMillis != null) {
+                        // Convertir milisegundos a String ISO (YYYY-MM-DD)
+                        val instant = java.time.Instant.ofEpochMilli(selectedDateMillis)
+                        val localDate = java.time.LocalDateTime.ofInstant(instant, java.time.ZoneId.of("UTC"))
+
+                        scope.launch {
+                            val result = gymViewModel.actualizarSuscripcion(
+                                gymId,
+                                memberToEdit!!,
+                                localDate.toLocalDate().toString()
+                            )
+                            result.onSuccess {
+                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                            }.onFailure {
+                                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    showDatePicker = false
+                }) {
+                    Text("ACEPTAR", fontFamily = poppinsBold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("CANCELAR", fontFamily = poppinsBold)
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }
