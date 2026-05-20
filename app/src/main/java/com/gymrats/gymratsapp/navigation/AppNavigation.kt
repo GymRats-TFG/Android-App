@@ -1,11 +1,17 @@
 package com.gymrats.gymratsapp.navigation
 
+import android.app.Application
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.screens.LoginScreen
 import com.gymrats.gymratsapp.screens.SignupScreen
@@ -13,8 +19,16 @@ import com.gymrats.gymratsapp.screens.SplashScreen
 
 @Composable
 fun AppNavigation(){
+    val context = LocalContext.current
     val navController = rememberNavController()
-    val authViewModel: AuthViewModel = viewModel()
+    val sessionManager = remember { SessionManager(context) }
+    val authViewModel: AuthViewModel = viewModel(factory = object :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return AuthViewModel(context.applicationContext as Application, sessionManager) as T
+        }
+    })
+
 
     NavHost(
         navController = navController,
@@ -35,7 +49,8 @@ fun AppNavigation(){
                         launchSingleTop = true
                     }
                 },
-                authViewModel
+                authViewModel,
+                sessionManager
             )
         }
 
@@ -82,7 +97,7 @@ fun AppNavigation(){
 
         // Navegación entre pantallas una vez autenticado
         composable(Routes.Main.route) {
-            MainScaffold(navController, authViewModel)
+            MainScaffold(navController, authViewModel, sessionManager)
         }
     }
 }

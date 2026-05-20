@@ -16,38 +16,58 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
+import com.gymrats.gymratsapp.screens.CreateGymScreen
 import com.gymrats.gymratsapp.screens.EditProfileScreen
 import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
+import com.gymrats.gymratsapp.screens.GymDetailScreen
+import com.gymrats.gymratsapp.screens.ManageMembersScreen
 import com.gymrats.gymratsapp.screens.ProfileScreen
 import com.gymrats.gymratsapp.screens.QRScreen
 import com.gymrats.gymratsapp.screens.ScannerScreen
 import com.gymrats.gymratsapp.screens.UserHomeScreen
+import com.gymrats.gymratsapp.viewModels.GymViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel) {
+fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel, sessionManager: SessionManager) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val sessionManager = remember { SessionManager(context) }
+    val gymViewModel = remember { GymViewModel(sessionManager) }
 
     val isEnterprise = authViewModel.isEnterprise
+
+    if (isEnterprise == null) {
+        Box(Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background))
+        return
+    }
 
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    val shouldShowBottomBar = currentRoute != "edit_profile"
+    val shouldShowBottomBar = when (currentRoute) {
+        NavBarRoutes.EditProfile.route -> false
+        NavBarRoutes.CreateGym.route -> false
+        "${NavBarRoutes.GymDetail.route}/{gymId}" -> false
+        "${NavBarRoutes.ManageMembers.route}/{gymId}" -> false
+        else -> true
+    }
 
     Scaffold(
         bottomBar = {
-            if (shouldShowBottomBar) { // Solo se muestra si no estamos editando el perfil
+            if (shouldShowBottomBar) {
                 BottomNavBar(
                     navController = navController,
                     isEnterprise = isEnterprise
@@ -62,7 +82,12 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
         ) {
             composable(NavBarRoutes.Home.route) {
                 if (isEnterprise) {
-                    EnterpriseHomeScreen()
+                    EnterpriseHomeScreen(authViewModel, gymViewModel,
+                        onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) },
+                        onGymClick = { gymId ->
+                            navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
+                        }
+                    )
                 } else {
                     UserHomeScreen()
                 }
@@ -79,16 +104,21 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
                         scope.launch {
                             authViewModel.clearState()
                             sessionManager.clearSession()
+
+                            // Damos tiempo al sistema de archivos para persistir el borrado
+//                            delay(800)
+
                             rootNavController.navigate(Routes.AuthGraph.route) {
-                                popUpTo(Routes.Main.route) { inclusive = true }
+                                popUpTo(0) { inclusive = true }
                             }
                         }
                     },
-                    onEditClick = { navController.navigate("edit_profile") }
+                    onEditClick = { navController.navigate(NavBarRoutes.EditProfile.route) },
+                    onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) }
                 )
             }
 
-            composable("edit_profile") {
+            composable(NavBarRoutes.EditProfile.route) {
                 EditProfileScreen(
                     authViewModel = authViewModel,
                     onCloseClick = { navController.popBackStack() },
@@ -96,6 +126,48 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel)
                         authViewModel.cargarPerfil()
                         navController.popBackStack()
                     }
+                )
+            }
+
+            composable(NavBarRoutes.CreateGym.route) {
+                CreateGymScreen(
+                    gymViewModel = gymViewModel,
+                    onClose = { navController.popBackStack() },
+                    onSuccess = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "${NavBarRoutes.GymDetail.route}/{gymId}",
+                arguments = listOf(navArgument("gymId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val gymId = backStackEntry.arguments?.getString("gymId")
+
+                // Buscamos el objeto gym en la lista del ViewModel usando el ID
+                val gym = gymViewModel.gyms.find { it.id == gymId }
+
+                if (gym != null) {
+                    GymDetailScreen(
+                        gym = gym,
+                        isEnterprise = authViewModel.isEnterprise ?: false,
+                        onBack = { navController.popBackStack() },
+                        gymViewModel = gymViewModel,
+                        onManageMembers = { id ->
+                            navController.navigate("${NavBarRoutes.ManageMembers.route}/$id")
+                        }
+                    )
+                }
+            }
+
+            composable(
+                route = "${NavBarRoutes.ManageMembers.route}/{gymId}",
+                arguments = listOf(navArgument("gymId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val gymId = backStackEntry.arguments?.getString("gymId") ?: ""
+                ManageMembersScreen(
+                    gymId = gymId,
+                    gymViewModel = gymViewModel,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }

@@ -70,11 +70,16 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
         }
     }
 
-    // Observador de éxito
+    // Observador de éxito robusto
     LaunchedEffect(authViewModel.success) {
         if (authViewModel.success) {
-            isLoading = false
-            onLogin()
+            // Nos aseguramos de que el perfil exista
+            if (authViewModel.userProfile != null) {
+                onLogin()
+            } else {
+                // Si hubo éxito en login pero no tenemos el objeto user todavía, lo cargamos
+                authViewModel.cargarPerfil()
+            }
         }
     }
 

@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,30 +26,33 @@ import kotlinx.coroutines.flow.first
 fun SplashScreen(
     onNavigateToMain: () -> Unit,
     onNavigateToAuth: () -> Unit,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    sessionManager: SessionManager
 ) {
-    val context = LocalContext.current
-    val sessionManager = remember { SessionManager(context) }
-
     LaunchedEffect(Unit) {
+        delay(1500)
+
         val token = sessionManager.userToken.first()
 
         if (!token.isNullOrEmpty()) {
             authViewModel.cargarPerfil()
         } else {
-            delay(1500)
             onNavigateToAuth()
         }
     }
 
-    LaunchedEffect(authViewModel.success) {
+    LaunchedEffect(authViewModel.success, authViewModel.errorMessage) {
+        // Si terminó el proceso (ya sea por success o porque saltó un error)
         if (authViewModel.success) {
-            // Si hay un error (ej: sesión expirada), vamos al Auth
             if (authViewModel.userProfile != null) {
                 onNavigateToMain()
             } else {
                 onNavigateToAuth()
             }
+        } else if (authViewModel.errorMessage != null) {
+            // Si dio error de conexión o sesión expirada
+            delay(500) // Pequeño delay para que lean el Toast
+            onNavigateToAuth()
         }
     }
 

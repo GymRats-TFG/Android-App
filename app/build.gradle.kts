@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.play.services.geocoder)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,4 +74,7 @@ dependencies {
 
     // DataStore para persistencia de datos
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Compresor de imágenes
+    implementation("id.zelory:compressor:3.0.1")
 }
