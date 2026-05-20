@@ -210,4 +210,52 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             }
         } catch (e: Exception) { Result.failure(e) }
     }
+
+    suspend fun actualizarSede(
+        gymId: String,
+        name: String?,
+        description: String?,
+        address: String?,
+        phone: String?,
+        email: String?,
+        price: Double?,
+        maxCapacity: Int?,
+        imageFile: File?
+    ): Result<GymResponse> {
+        return try {
+            val token = sessionManager.userToken.first()
+            if (token.isNullOrEmpty()) return Result.failure(Exception("No token"))
+
+            val namePart = name?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val descPart = description?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val addrPart = address?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val phonePart = phone?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val emailPart = email?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val pricePart = price?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val capPart = maxCapacity?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val imagePart = imageFile?.let {
+                val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
+                MultipartBody.Part.createFormData("image_file", it.name, requestFile)
+            }
+
+            val response = RetrofitClient.instance.updateGym(
+                "Bearer $token", gymId, namePart, descPart, addrPart,
+                phonePart, emailPart, pricePart, capPart, imagePart
+            )
+
+            if (response.isSuccessful && response.body() != null) {
+                val updatedGym = response.body()!!.gym
+                // Actualizar el estado local
+                selectedGym = updatedGym
+                cargarSedes() // Refrescar la lista general
+                Result.success(updatedGym)
+            } else {
+                val errorMsg = response.errorBody()?.string() ?: "Error desconocido"
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

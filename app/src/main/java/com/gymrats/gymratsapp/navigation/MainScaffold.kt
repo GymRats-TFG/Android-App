@@ -26,6 +26,7 @@ import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.screens.CreateGymScreen
+import com.gymrats.gymratsapp.screens.EditGymScreen
 import com.gymrats.gymratsapp.screens.EditProfileScreen
 import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
 import com.gymrats.gymratsapp.screens.GymDetailScreen
@@ -62,6 +63,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
         NavBarRoutes.CreateGym.route -> false
         "${NavBarRoutes.GymDetail.route}/{gymId}" -> false
         "${NavBarRoutes.ManageMembers.route}/{gymId}" -> false
+        NavBarRoutes.EditGym.route -> false
         else -> true
     }
 
@@ -154,6 +156,9 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                         gymViewModel = gymViewModel,
                         onManageMembers = { id ->
                             navController.navigate("${NavBarRoutes.ManageMembers.route}/$id")
+                        },
+                        onEditGym = {
+                            navController.navigate(NavBarRoutes.EditGym.route)
                         }
                     )
                 }
@@ -168,6 +173,14 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                     gymId = gymId,
                     gymViewModel = gymViewModel,
                     onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavBarRoutes.EditGym.route) {
+                EditGymScreen(
+                    gymViewModel = gymViewModel,
+                    onClose = { navController.popBackStack() },
+                    onSuccess = { navController.popBackStack() }
                 )
             }
         }

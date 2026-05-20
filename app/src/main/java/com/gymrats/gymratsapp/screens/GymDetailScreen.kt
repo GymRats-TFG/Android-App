@@ -13,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,7 @@ fun GymDetailScreen(
     onBack: () -> Unit,
     gymViewModel: GymViewModel,
     onManageMembers: (String) -> Unit,
+    onEditGym: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val poppinsBold = FontFamily(Font(R.font.poppins_bold))
@@ -77,7 +79,10 @@ fun GymDetailScreen(
                 },
                 actions = {
                     if (isEnterprise) {
-                        IconButton(onClick = { /* TODO: Editar Gym */ }) {
+                        IconButton(onClick = {
+                            gymViewModel.cargarDatosDetalle(gym.id, true)
+                            onEditGym(gym.id)
+                        }) {
                             Icon(
                                 Icons.Rounded.Edit,
                                 contentDescription = stringResource(R.string.gym_detail_edit_button),
@@ -106,7 +111,13 @@ fun GymDetailScreen(
                     .verticalScroll(scrollState)
             ) {
                 AsyncImage(
-                    model = gym.image_url ?: R.drawable.gymrats_logo,
+                    model = remember(gym.image_url) {
+                        if (gym.image_url != null) {
+                            "${gym.image_url}?t=${System.currentTimeMillis()}"
+                        } else {
+                            R.drawable.gymrats_logo
+                        }
+                    },
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -126,7 +137,12 @@ fun GymDetailScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = 8.dp)
                     ) {
-                        Icon(Icons.Default.LocationOn, null, Modifier.size(18.dp), tint = Color.Gray)
+                        Icon(
+                            Icons.Default.LocationOn,
+                            null,
+                            Modifier.size(18.dp),
+                            tint = Color.Gray
+                        )
                         Spacer(Modifier.width(4.dp))
                         Text(
                             gym.address,
@@ -175,7 +191,8 @@ fun GymDetailScreen(
 
                     SectionTitle(stringResource(R.string.gym_detail_section_info))
                     Text(
-                        text = gym.description ?: stringResource(R.string.gym_detail_no_description),
+                        text = gym.description
+                            ?: stringResource(R.string.gym_detail_no_description),
                         fontSize = 15.sp,
                         fontFamily = poppinsRegular,
                         modifier = Modifier.padding(bottom = 12.dp),
@@ -199,7 +216,10 @@ fun GymDetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            SectionTitle(stringResource(R.string.gym_detail_section_members), true, { onManageMembers(gym.id) })
+                            SectionTitle(
+                                stringResource(R.string.gym_detail_section_members),
+                                true,
+                                { onManageMembers(gym.id) })
                         }
                         if (members.isEmpty()) {
                             Card(

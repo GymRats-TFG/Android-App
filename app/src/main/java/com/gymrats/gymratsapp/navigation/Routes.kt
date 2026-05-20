@@ -23,4 +23,6 @@ sealed class NavBarRoutes(val route: String) {
     object GymDetail : NavBarRoutes("gym_detail")
 
     object ManageMembers : NavBarRoutes("manage_members")
+
+    object EditGym : NavBarRoutes("edit_gym")
 }

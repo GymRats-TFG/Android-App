@@ -84,4 +84,19 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("subscription_id") subscriptionId: String
     ): Response<Unit>
+
+    @Multipart
+    @PATCH("gyms/{gym_id}")
+    suspend fun updateGym(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String,
+        @Part("name") name: RequestBody?,
+        @Part("description") description: RequestBody?,
+        @Part("address") address: RequestBody?,
+        @Part("phone") phone: RequestBody?,
+        @Part("email") email: RequestBody?,
+        @Part("price") price: RequestBody?,
+        @Part("max_capacity") maxCapacity: RequestBody?,
+        @Part image_file: MultipartBody.Part?
+    ): Response<GymCreateResponse>
 }

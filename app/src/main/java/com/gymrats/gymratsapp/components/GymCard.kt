@@ -18,6 +18,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +50,13 @@ fun GymCard(
     ) {
         Column {
             AsyncImage(
-                model = imageUrl ?: R.drawable.gymrats_logo, // Imagen por defecto si no hay URL
+                model = remember(imageUrl) {
+                    if (imageUrl != null) {
+                        "${imageUrl}?t=${System.currentTimeMillis()}"
+                    } else {
+                        R.drawable.gymrats_logo
+                    }
+                }, // Imagen por defecto si no hay URL
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
