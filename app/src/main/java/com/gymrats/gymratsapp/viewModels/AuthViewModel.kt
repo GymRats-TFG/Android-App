@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.gymrats.gymratsapp.data.RefreshRequest
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.SignupRequest
 import com.gymrats.gymratsapp.data.UserData
@@ -19,7 +20,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 
-class AuthViewModel(application: Application, private val sessionManager: SessionManager) : AndroidViewModel(application) {
+class AuthViewModel(application: Application, private val sessionManager: SessionManager) :
+    AndroidViewModel(application) {
 
     var errorMessage by mutableStateOf<String?>(null)
         private set
@@ -34,7 +36,7 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
         private set
 
     var isLoading by mutableStateOf(false)
-    private set
+        private set
 
     fun ejecutarLogin(email: String, pass: String) {
         success = false
@@ -52,6 +54,7 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                         val isEnt = loginResponse.user.is_enterprise
 
                         sessionManager.saveToken(loginResponse.access_token)
+                        sessionManager.saveRefreshToken(loginResponse.refresh_token)
                         sessionManager.saveIsEnterprise(isEnt)
 
                         isEnterprise = isEnt
@@ -60,7 +63,8 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                         success = true
                     }
                 } else {
-                    errorMessage = "Error en login: ${response.code()} - ${response.errorBody()?.string()}"
+                    errorMessage =
+                        "Error en login: ${response.code()} - ${response.errorBody()?.string()}"
                 }
             } catch (e: Exception) {
                 errorMessage = "Error de red: ${e.message}"
@@ -83,6 +87,7 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                         val isEnt = userData.is_enterprise
 
                         sessionManager.saveToken(userData.access_token)
+                        sessionManager.saveRefreshToken(userData.refresh_token)
                         sessionManager.saveIsEnterprise(userData.is_enterprise)
 
                         this@AuthViewModel.isEnterprise = isEnt
@@ -99,17 +104,33 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
         }
     }
 
-    fun cargarPerfil() {
+    suspend fun cargarPerfil() {
+        if (isLoading) return
+
+        isLoading = true
         success = false
         errorMessage = null
-        isLoading = true
-        viewModelScope.launch {
-            try {
-                val token = sessionManager.userToken.first()
-                if (!token.isNullOrEmpty()) {
-                    val response = RetrofitClient.instance.getMyProfile("Bearer $token")
-                    if (response.isSuccessful) {
-                        userProfile = response.body()
+
+        try {
+            val currentRefreshToken = sessionManager.refreshToken.first()
+
+            if (!currentRefreshToken.isNullOrEmpty()) {
+                val refreshResponse = RetrofitClient.instance.refreshToken(
+                    RefreshRequest(
+                        currentRefreshToken
+                    )
+                )
+
+                if (refreshResponse.isSuccessful && refreshResponse.body() != null) {
+                    val body = refreshResponse.body()!!
+                    sessionManager.saveToken(body.access_token)
+                    sessionManager.saveRefreshToken(body.refresh_token)
+
+                    val profileResponse =
+                        RetrofitClient.instance.getMyProfile("Bearer ${body.access_token}")
+
+                    if (profileResponse.isSuccessful) {
+                        userProfile = profileResponse.body()
                         userProfile?.let {
                             val isEnt = it.is_enterprise
                             sessionManager.saveIsEnterprise(isEnt)
@@ -117,26 +138,27 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                             success = true
                         }
                     } else {
-                        clearState()
-                        sessionManager.clearSession()
-                        val errorBody = response.errorBody()?.string()
-                        println("DEBUG_AUTH: Error ${response.code()} - $errorBody")
-                        errorMessage = "Sesión expirada"
+                        throw Exception("No se pudo obtener el perfil tras el refresco")
                     }
                 } else {
-                    success = false
-                    isLoading = false
-                    errorMessage = "No hay token"
+                    clearState()
+                    sessionManager.clearSession()
+                    errorMessage = "Sesión expirada por completo"
                 }
-            } catch (_: Exception) {
-                clearState()
-                sessionManager.clearSession()
-                errorMessage = "Error de conexión"
-            } finally {
-                if(!success) userProfile = null
+            } else {
+                success = false
                 isLoading = false
+                errorMessage = "No hay datos de sesión guardados"
             }
+        } catch (e: Exception) {
+            clearState()
+            sessionManager.clearSession()
+            errorMessage = "Error de conexión o sesión inválida: ${e.message}"
+        } finally {
+            if (!success) userProfile = null
+            isLoading = false
         }
+
     }
 
     fun clearState() {

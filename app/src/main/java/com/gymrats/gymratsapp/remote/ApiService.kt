@@ -20,6 +20,11 @@ interface ApiService {
         @Body request: SignupRequest
     ): Response<SignupResponse>
 
+    @POST("refresh")
+    suspend fun refreshToken(
+        @Body request: RefreshRequest
+    ): Response<RefreshResponse>
+
     @GET("users/me")
     suspend fun getMyProfile(
         @Header("Authorization") token: String
@@ -39,10 +44,9 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<GymResponse>>
 
-    // ApiService.kt
-
     @Multipart
-    @POST("gyms/")suspend fun createGym(
+    @POST("gyms/")
+    suspend fun createGym(
         @Header("Authorization") token: String,
         @Part("name") name: RequestBody,
         @Part("description") description: RequestBody?,

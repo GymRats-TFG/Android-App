@@ -14,6 +14,7 @@ private val Context.dataStore by preferencesDataStore(name = "user_session")
 class SessionManager(private val context: Context) {
     companion object {
         private val USER_TOKEN = stringPreferencesKey("user_token")
+        private val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         private val IS_ENTERPRISE = booleanPreferencesKey("is_enterprise")
     }
 
@@ -35,6 +36,16 @@ class SessionManager(private val context: Context) {
 
     val isEnterprise: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[IS_ENTERPRISE] ?: false
+    }
+
+    suspend fun saveRefreshToken(token: String) {
+        context.dataStore.edit { preferences ->
+            preferences[REFRESH_TOKEN] = token
+        }
+    }
+
+    val refreshToken: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[REFRESH_TOKEN]
     }
 
     suspend fun clearSession() {

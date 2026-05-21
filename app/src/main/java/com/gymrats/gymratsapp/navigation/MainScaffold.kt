@@ -40,7 +40,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel, sessionManager: SessionManager) {
+fun MainScaffold(
+    rootNavController: NavController,
+    authViewModel: AuthViewModel,
+    sessionManager: SessionManager
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gymViewModel = remember { GymViewModel(sessionManager) }
@@ -48,9 +52,11 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
     val isEnterprise = authViewModel.isEnterprise
 
     if (isEnterprise == null) {
-        Box(Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background))
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        )
         return
     }
 
@@ -84,7 +90,8 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
         ) {
             composable(NavBarRoutes.Home.route) {
                 if (isEnterprise) {
-                    EnterpriseHomeScreen(authViewModel, gymViewModel,
+                    EnterpriseHomeScreen(
+                        authViewModel, gymViewModel,
                         onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) },
                         onGymClick = { gymId ->
                             navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
@@ -129,7 +136,9 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                     authViewModel = authViewModel,
                     onCloseClick = { navController.popBackStack() },
                     onSaveChangesClick = {
-                        authViewModel.cargarPerfil()
+                        scope.launch {
+                            authViewModel.cargarPerfil()
+                        }
                         navController.popBackStack()
                     }
                 )

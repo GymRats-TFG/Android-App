@@ -30,24 +30,20 @@ fun SplashScreen(
     sessionManager: SessionManager
 ) {
     LaunchedEffect(Unit) {
-        delay(1500)
+        delay(1000)
 
-        val token = sessionManager.userToken.first()
+        val rToken = sessionManager.refreshToken.first()
 
-        if (!token.isNullOrEmpty()) {
+        if (!rToken.isNullOrEmpty()) {
             authViewModel.cargarPerfil()
-        } else {
-            onNavigateToAuth()
-        }
-    }
 
-    LaunchedEffect(authViewModel.success, authViewModel.errorMessage, authViewModel.isLoading) {
-        if (!authViewModel.isLoading) {
             if (authViewModel.success && authViewModel.userProfile != null) {
                 onNavigateToMain()
-            } else if (authViewModel.errorMessage != null) {
+            } else {
                 onNavigateToAuth()
             }
+        } else {
+            onNavigateToAuth()
         }
     }
 
