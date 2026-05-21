@@ -1,5 +1,6 @@
 package com.gymrats.gymratsapp.screens
 
+import androidx.activity.result.launch
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -14,12 +15,14 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -31,6 +34,7 @@ import com.gymrats.gymratsapp.components.MemberItem
 import com.gymrats.gymratsapp.components.SectionTitle
 import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.viewModels.GymViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +50,10 @@ fun GymDetailScreen(
     val poppinsBold = FontFamily(Font(R.font.poppins_bold))
     val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
     val poppinsSemiBold = FontFamily(Font(R.font.poppins_semibold))
+
+    val currentGym = gymViewModel.selectedGym ?: gym
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     LaunchedEffect(gym.id) {
         if (isEnterprise) {
@@ -89,6 +97,18 @@ fun GymDetailScreen(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
+
+                        IconButton(onClick = {
+                            scope.launch {
+                                gymViewModel.toggleEstadoSede(currentGym.id)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = if (currentGym.is_open) Icons.Default.LockOpen else Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 },
                 windowInsets = WindowInsets(0, 0, 0, 0),
@@ -110,20 +130,39 @@ fun GymDetailScreen(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
             ) {
-                AsyncImage(
-                    model = remember(gym.image_url) {
-                        if (gym.image_url != null) {
-                            "${gym.image_url}?t=${System.currentTimeMillis()}"
-                        } else {
-                            R.drawable.gymrats_logo
-                        }
-                    },
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    contentScale = ContentScale.Crop
-                )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    AsyncImage(
+                        model = remember(gym.image_url) {
+                            if (gym.image_url != null) {
+                                "${gym.image_url}?t=${System.currentTimeMillis()}"
+                            } else {
+                                R.drawable.gymrats_logo
+                            }
+                        },
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    Surface(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.TopEnd),
+                        color = if (currentGym.is_open) Color(0xFF2E7D32) else Color(0xFFC62828),
+                        shape = RoundedCornerShape(8.dp),
+                        shadowElevation = 4.dp
+                    ) {
+                        Text(
+                            text = if (currentGym.is_open) stringResource(R.string.open) else stringResource(R.string.closed),
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontFamily = poppinsBold,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
+                    }
+                }
 
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(

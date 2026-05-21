@@ -121,13 +121,17 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                         sessionManager.clearSession()
                         val errorBody = response.errorBody()?.string()
                         println("DEBUG_AUTH: Error ${response.code()} - $errorBody")
-//                        errorMessage = "Sesión expirada"
+                        errorMessage = "Sesión expirada"
                     }
+                } else {
+                    success = false
+                    isLoading = false
+                    errorMessage = "No hay token"
                 }
             } catch (e: Exception) {
                 clearState()
                 sessionManager.clearSession()
-//                errorMessage = "Error de conexión"
+                errorMessage = "Error de conexión"
             } finally {
                 if(!success) userProfile = null
                 isLoading = false

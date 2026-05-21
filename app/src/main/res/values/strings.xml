@@ -80,6 +80,11 @@
     <string name="gym_card_current_capacity">Aforo Actual</string>
     <string name="gym_card_full_percentage">Full</string>
     <string name="gym_card_members_count">miembros</string>
+    <string name="open">ABIERTO</string>
+    <string name="closed">CERRADO</string>
+
+    <!--  SectionTitle  -->
+    <string name="view_all">Ver todo</string>
 
     <!--  GymDetailScreen  -->
     <string name="gym_detail_title">Detalles de la sede</string>

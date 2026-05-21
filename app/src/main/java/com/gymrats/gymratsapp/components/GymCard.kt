@@ -1,6 +1,7 @@
 package com.gymrats.gymratsapp.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -38,6 +40,7 @@ fun GymCard(
     currentCapacity: Int,
     maxCapacity: Int,
     imageUrl: String?,
+    isOpen: Boolean,
     poppinsBold: FontFamily,
     poppinsRegular: FontFamily
 ) {
@@ -49,23 +52,47 @@ fun GymCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
     ) {
         Column {
-            AsyncImage(
-                model = remember(imageUrl) {
-                    if (imageUrl != null) {
-                        "${imageUrl}?t=${System.currentTimeMillis()}"
-                    } else {
-                        R.drawable.gymrats_logo
-                    }
-                }, // Imagen por defecto si no hay URL
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp),
-                contentScale = ContentScale.Crop
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                AsyncImage(
+                    model = remember(imageUrl) {
+                        if (imageUrl != null) {
+                            "${imageUrl}?t=${System.currentTimeMillis()}"
+                        } else {
+                            R.drawable.gymrats_logo
+                        }
+                    },
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp),
+                    contentScale = ContentScale.Crop
+                )
+
+                Surface(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.TopEnd),
+                    color = if (isOpen) Color(0xFF2E7D32) else Color(0xFFC62828),
+                    shape = RoundedCornerShape(8.dp),
+                    shadowElevation = 4.dp
+                ) {
+                    Text(
+                        text = if (isOpen) stringResource(R.string.open) else stringResource(R.string.closed),
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontFamily = poppinsBold,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
 
             Column(modifier = Modifier.padding(20.dp)) {
-                Text(name, fontSize = 18.sp, fontFamily = poppinsBold, color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    name,
+                    fontSize = 18.sp,
+                    fontFamily = poppinsBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -77,8 +104,16 @@ fun GymCard(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.gym_card_current_capacity), fontSize = 14.sp, fontFamily = poppinsBold)
-                    Text("${(percentage * 100).toInt()}% "+stringResource(R.string.gym_card_full_percentage), color = Color(0xFF1A45A0), fontFamily = poppinsBold)
+                    Text(
+                        stringResource(R.string.gym_card_current_capacity),
+                        fontSize = 14.sp,
+                        fontFamily = poppinsBold
+                    )
+                    Text(
+                        "${(percentage * 100).toInt()}% " + stringResource(R.string.gym_card_full_percentage),
+                        color = Color(0xFF1A45A0),
+                        fontFamily = poppinsBold
+                    )
                 }
 
                 LinearProgressIndicator(
@@ -93,7 +128,7 @@ fun GymCard(
                 )
 
                 Text(
-                    text = "$currentCapacity / $maxCapacity "+stringResource(R.string.gym_card_members_count),
+                    text = "$currentCapacity / $maxCapacity " + stringResource(R.string.gym_card_members_count),
                     fontSize = 10.sp,
                     fontFamily = poppinsRegular,
                     color = Color.Gray,

@@ -104,4 +104,10 @@ interface ApiService {
     suspend fun getEnterpriseStats(
         @Header("Authorization") token: String
     ): Response<EnterpriseStats>
+
+    @PATCH("gyms/{gym_id}/toggle-open")
+    suspend fun toggleGymOpenStatus(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String
+    ): Response<ToggleOpenResponse>
 }

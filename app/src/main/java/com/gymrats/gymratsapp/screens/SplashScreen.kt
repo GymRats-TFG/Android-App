@@ -41,18 +41,13 @@ fun SplashScreen(
         }
     }
 
-    LaunchedEffect(authViewModel.success, authViewModel.errorMessage) {
-        // Si terminó el proceso (ya sea por success o porque saltó un error)
-        if (authViewModel.success) {
-            if (authViewModel.userProfile != null) {
+    LaunchedEffect(authViewModel.success, authViewModel.errorMessage, authViewModel.isLoading) {
+        if (!authViewModel.isLoading) {
+            if (authViewModel.success && authViewModel.userProfile != null) {
                 onNavigateToMain()
-            } else {
+            } else if (authViewModel.errorMessage != null) {
                 onNavigateToAuth()
             }
-        } else if (authViewModel.errorMessage != null) {
-            // Si dio error de conexión o sesión expirada
-            delay(500) // Pequeño delay para que lean el Toast
-            onNavigateToAuth()
         }
     }
 

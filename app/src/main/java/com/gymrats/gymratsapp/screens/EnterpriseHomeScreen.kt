@@ -103,6 +103,7 @@ fun EnterpriseHomeScreen(
                             currentCapacity = gym.current_capacity,
                             maxCapacity = gym.max_capacity,
                             imageUrl = gym.image_url,
+                            isOpen = gym.is_open,
                             poppinsBold = poppinsBold,
                             poppinsRegular = poppinsRegular
                         )

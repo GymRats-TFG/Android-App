@@ -186,6 +186,7 @@ fun ProfileScreen(
                             name = gym.name,
                             currentCapacity = gym.current_capacity,
                             imageUrl = gym.image_url,
+                            isOpen = gym.is_open,
                             onClick = { onGymClick(gym.id) }
                         )
                         Spacer(Modifier.height(12.dp))

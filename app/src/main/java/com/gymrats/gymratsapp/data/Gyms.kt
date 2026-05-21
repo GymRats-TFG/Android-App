@@ -49,3 +49,8 @@ data class EnterpriseStats(
     val active_subscribers: Int,
     val total_current_capacity: Int
 )
+
+data class ToggleOpenResponse(
+    val message: String,
+    val is_open: Boolean
+)

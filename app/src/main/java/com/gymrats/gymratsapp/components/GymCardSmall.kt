@@ -25,6 +25,7 @@ fun GymCardSmall(
     name: String,
     currentCapacity: Int,
     imageUrl: String?,
+    isOpen: Boolean,
     onClick: () -> Unit
 ) {
     val poppinsBold = FontFamily(Font(R.font.poppins_bold))
@@ -34,7 +35,7 @@ fun GymCardSmall(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
         onClick = onClick
     ) {
@@ -50,8 +51,8 @@ fun GymCardSmall(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(90.dp)
-                    .clip(RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp)),
+                    .width(90.dp),
+//                    .clip(RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp)),
                 contentScale = ContentScale.Crop
             )
 
@@ -72,6 +73,12 @@ fun GymCardSmall(
                     fontSize = 12.sp,
                     fontFamily = poppinsSemiBold,
                     color = Color(0xFF1A45A0)
+                )
+                Text(
+                    text = if (isOpen) stringResource(R.string.open) else stringResource(R.string.closed),
+                    fontSize = 10.sp,
+                    fontFamily = poppinsSemiBold,
+                    color = if (isOpen) Color(0xFF2E7D32) else Color(0xFFC62828)
                 )
             }
 

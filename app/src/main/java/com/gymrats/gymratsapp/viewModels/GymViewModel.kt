@@ -278,4 +278,25 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             }
         }
     }
+
+    suspend fun toggleEstadoSede(gymId: String): Result<Boolean> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+            val response = RetrofitClient.instance.toggleGymOpenStatus("Bearer $token", gymId)
+
+            if (response.isSuccessful && response.body() != null) {
+                val nuevoEstado = response.body()!!.is_open
+
+                selectedGym = selectedGym?.copy(is_open = nuevoEstado)
+
+                gyms = gyms.map { if (it.id == gymId) it.copy(is_open = nuevoEstado) else it }
+
+                Result.success(nuevoEstado)
+            } else {
+                Result.failure(Exception("Error al cambiar estado"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
