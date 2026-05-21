@@ -38,8 +38,8 @@
     <string name="section_activity_log">REGISTRO DE ACTIVIDAD</string>
     <string name="section_subscriptions">SUSCRIPCIONES</string>
     <string name="action_see_all">Ver todo</string>
-    <string name="stat_total_locations">TOTAL DE SEDES</string>
-    <string name="stat_active_subscribers">SUSCRIPTORES ACTIVOS</string>
+    <string name="stat_total_capacity">AFORO TOTAL ACTUAL</string>
+    <string name="stat_active_subscribers">SOCIOS ACTIVOS</string>
     <string name="button_add_location">AÑADIR SEDE</string>
     <string name="empty_no_recent_activity">No hay actividad reciente</string>
     <string name="empty_no_active_subscriptions">No hay suscripciones activas</string>
@@ -65,21 +65,26 @@
     <string name="create_gym_title">Nueva Sede</string>
     <string name="label_add_gym_image">Añadir imagen de la sede</string>
     <string name="label_gym_name">Nombre del gimnasio</string>
-    <string name="label_gym_address">Dirección completa *</string>
+    <string name="label_gym_address">Dirección completa</string>
     <string name="label_max_capacity">Aforo máximo</string>
     <string name="button_create_gym">CREAR SEDE</string>
-    <string name="label_gym_description_optional">Descripción (Opcional)</string>
-    <string name="label_phone">Teléfono *</string>
-    <string name="label_email_contact">Email de contacto *</string>
-    <string name="label_price_euro">Precio (€) *</string>
-    <string name="label_max_capacity_short">Aforo máx. *</string>
+    <string name="label_gym_description_optional">Descripción</string>
+    <string name="label_phone">Teléfono</string>
+    <string name="label_email_contact">Email de contacto</string>
+    <string name="label_price_euro">Precio (€)</string>
+    <string name="label_max_capacity_short">Aforo máx.</string>
     <string name="gym_created">¡Sede creada correctamente!</string>
     <string name="error_location_not_found">No se ha podido localizar la ubicación</string>
 
     <!--  GymCard  -->
-    <string name="gym_card_current_capacity">Capacidad Actual</string>
+    <string name="gym_card_current_capacity">Aforo Actual</string>
     <string name="gym_card_full_percentage">Full</string>
     <string name="gym_card_members_count">miembros</string>
+    <string name="open">ABIERTO</string>
+    <string name="closed">CERRADO</string>
+
+    <!--  SectionTitle  -->
+    <string name="view_all">Ver todo</string>
 
     <!--  GymDetailScreen  -->
     <string name="gym_detail_title">Detalles de la sede</string>
@@ -96,8 +101,32 @@
     <string name="manage_members_search_label">ID o Username del usuario</string>
     <string name="manage_members_current_list">Socios actuales</string>
     <string name="manage_members_add_button">Añadir socio</string>
+    <string name="manage_members_filter">Filtrar por nombre o ID</string>
+    <string name="manage_members_no_results">No se encontraron socios con ese filtro.</string>
 
     <!--  MenuItem  -->
     <string name="member_item_active">Activo</string>
     <string name="member_item_expired">Expirado</string>
+    <string name="member_item_start_date">Inicio</string>
+    <string name="member_item_end_date">Expira</string>
+    <string name="manager_members_remove_sub">Eliminar socio</string>
+    <string name="manager_members_sure_remove_msg1">¿Estás seguro de que deseas eliminar a</string>
+    <string name="manager_members_sure_remove_msg2">Esta acción no se puede deshacer.</string>
+    <string name="remove">ELIMINAR</string>
+    <string name="accept">ACEPTAR</string>
+
+    <!--  EditGymScreen  -->
+    <string name="edit_gym">Editar Sede</string>
+    <string name="gym_updated">Sede actualizada</string>
+    <string name="save_changes">GUARDAR CAMBIOS</string>
+    <string name="changes_not_saved">Cambios sin guardar</string>
+    <string name="discard_changes">¿Deseas descartar los cambios?</string>
+    <string name="keep_editing">Seguir editando</string>
+
+    <!--  QRScreen  -->
+    <string name="qr_register">REGISTRARSE</string>
+    <string name="qr_scan_code">Escanea tu código en recepción.</string>
+    <string name="qr_code">QR Code</string>
+    <string name="qr_user">USUARIO</string>
+    <string name="qr_increase_brightness">AUMENTA EL BRILLO PARA FACILITAR EL ESCANEO</string>
 </resources>

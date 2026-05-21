@@ -26,6 +26,7 @@ import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.screens.CreateGymScreen
+import com.gymrats.gymratsapp.screens.EditGymScreen
 import com.gymrats.gymratsapp.screens.EditProfileScreen
 import com.gymrats.gymratsapp.screens.EnterpriseHomeScreen
 import com.gymrats.gymratsapp.screens.GymDetailScreen
@@ -39,7 +40,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel, sessionManager: SessionManager) {
+fun MainScaffold(
+    rootNavController: NavController,
+    authViewModel: AuthViewModel,
+    sessionManager: SessionManager
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gymViewModel = remember { GymViewModel(sessionManager) }
@@ -47,9 +52,11 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
     val isEnterprise = authViewModel.isEnterprise
 
     if (isEnterprise == null) {
-        Box(Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background))
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        )
         return
     }
 
@@ -62,6 +69,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
         NavBarRoutes.CreateGym.route -> false
         "${NavBarRoutes.GymDetail.route}/{gymId}" -> false
         "${NavBarRoutes.ManageMembers.route}/{gymId}" -> false
+        NavBarRoutes.EditGym.route -> false
         else -> true
     }
 
@@ -82,7 +90,8 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
         ) {
             composable(NavBarRoutes.Home.route) {
                 if (isEnterprise) {
-                    EnterpriseHomeScreen(authViewModel, gymViewModel,
+                    EnterpriseHomeScreen(
+                        authViewModel, gymViewModel,
                         onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) },
                         onGymClick = { gymId ->
                             navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
@@ -93,12 +102,13 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                 }
             }
 
-            composable(NavBarRoutes.QR.route) { QRScreen() }
+            composable(NavBarRoutes.QR.route) { QRScreen(authViewModel) }
             composable(NavBarRoutes.Scanner.route) { ScannerScreen() }
 
             composable(NavBarRoutes.Profile.route) {
                 ProfileScreen(
                     authViewModel = authViewModel,
+                    gymViewModel = gymViewModel,
                     userProfile = authViewModel.userProfile,
                     onLogout = {
                         scope.launch {
@@ -114,7 +124,10 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                         }
                     },
                     onEditClick = { navController.navigate(NavBarRoutes.EditProfile.route) },
-                    onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) }
+                    onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) },
+                    onGymClick = { gymId ->
+                        navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
+                    }
                 )
             }
 
@@ -123,7 +136,9 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                     authViewModel = authViewModel,
                     onCloseClick = { navController.popBackStack() },
                     onSaveChangesClick = {
-                        authViewModel.cargarPerfil()
+                        scope.launch {
+                            authViewModel.cargarPerfil()
+                        }
                         navController.popBackStack()
                     }
                 )
@@ -154,6 +169,9 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                         gymViewModel = gymViewModel,
                         onManageMembers = { id ->
                             navController.navigate("${NavBarRoutes.ManageMembers.route}/$id")
+                        },
+                        onEditGym = {
+                            navController.navigate(NavBarRoutes.EditGym.route)
                         }
                     )
                 }
@@ -168,6 +186,14 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                     gymId = gymId,
                     gymViewModel = gymViewModel,
                     onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(NavBarRoutes.EditGym.route) {
+                EditGymScreen(
+                    gymViewModel = gymViewModel,
+                    onClose = { navController.popBackStack() },
+                    onSuccess = { navController.popBackStack() }
                 )
             }
         }

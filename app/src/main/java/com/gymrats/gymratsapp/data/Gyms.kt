@@ -25,7 +25,9 @@ data class MemberInfoResponse(
     val name: String?,
     val avatar_url: String?,
     val subscription_id: String,
-    val status: String
+    val status: String,
+    val start_date: String,
+    val expiration_date: String
 )
 
 data class MemberLinkRequest(
@@ -34,4 +36,21 @@ data class MemberLinkRequest(
     val username: String? = null,
     val start_date: String, // ISO format
     val expiration_date: String // ISO format
+)
+
+data class SubscriptionUpdateRequest(
+    val status: String,
+    val start_date: String,
+    val expiration_date: String
+)
+
+data class EnterpriseStats(
+    val total_gyms: Int,
+    val active_subscribers: Int,
+    val total_current_capacity: Int
+)
+
+data class ToggleOpenResponse(
+    val message: String,
+    val is_open: Boolean
 )

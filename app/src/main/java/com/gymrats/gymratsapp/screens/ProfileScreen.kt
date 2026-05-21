@@ -26,22 +26,33 @@ import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.components.DashedAddButton
 import com.gymrats.gymratsapp.components.EmptyStateCard
+import com.gymrats.gymratsapp.components.GymCardSmall
 import com.gymrats.gymratsapp.components.SectionTitle
 import com.gymrats.gymratsapp.components.StatCard
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.data.UserData
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
+import com.gymrats.gymratsapp.viewModels.GymViewModel
 
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
+    gymViewModel: GymViewModel,
     userProfile: UserData?,
     onLogout: () -> Unit,
     onEditClick: () -> Unit,
     onCreateGym: () -> Unit,
+    onGymClick: (String) -> Unit
 ) {
+    val stats = gymViewModel.enterpriseStats
+    val gyms = gymViewModel.gyms
+
     LaunchedEffect(Unit) {
         authViewModel.cargarPerfil()
+        if (userProfile?.is_enterprise == true) {
+            gymViewModel.cargarStatsEnterprise()
+            gymViewModel.cargarSedes()
+        }
     }
 
     LaunchedEffect(authViewModel.errorMessage) {
@@ -153,19 +164,38 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         StatCard(
-                            stringResource(R.string.stat_total_locations),
-                            "0",
+                            stringResource(R.string.stat_active_subscribers),
+                            value = stats?.active_subscribers?.toString() ?: "0",
                             Modifier.weight(1f)
                         )
                         StatCard(
-                            stringResource(R.string.stat_active_subscribers),
-                            "0",
+                            stringResource(R.string.stat_total_capacity),
+                            value = stats?.total_current_capacity?.toString() ?: "0",
                             Modifier.weight(1f)
                         )
                     }
                 }
                 item { SectionTitle(stringResource(R.string.section_your_locations)) }
-                item { DashedAddButton({ onCreateGym() }) }
+
+                if (gyms.isEmpty()) {
+                    item { EmptyStateCard(stringResource(R.string.empty_no_locations)) }
+                } else {
+                    items(gyms.size) { index ->
+                        val gym = gyms[index]
+                        GymCardSmall(
+                            name = gym.name,
+                            currentCapacity = gym.current_capacity,
+                            imageUrl = gym.image_url,
+                            isOpen = gym.is_open,
+                            onClick = { onGymClick(gym.id) }
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
+
+                item {
+                    DashedAddButton({ onCreateGym() })
+                }
             } else {
                 item {
                     SectionTitle(

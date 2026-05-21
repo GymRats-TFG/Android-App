@@ -68,6 +68,7 @@ dependencies {
 
     // Retrofit: La librería para hacer peticiones HTTP
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Converter GSON: Para que Retrofit convierta el JSON de FastAPI a clases de Kotlin automáticamente
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -77,4 +78,7 @@ dependencies {
 
     // Compresor de imágenes
     implementation("id.zelory:compressor:3.0.1")
+
+    // Generación de QR
+    implementation("com.google.zxing:core:3.5.3")
 }

@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,7 @@ fun SectionTitle(title: String, showVerTodo: Boolean = false, onClick: () -> Uni
         )
         if (showVerTodo) {
             Text(
-                text = "Ver todo",
+                text = stringResource(R.string.view_all),
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.poppins_semibold)),

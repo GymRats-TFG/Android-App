@@ -18,7 +18,12 @@ interface ApiService {
     @POST("signup")
     suspend fun signup(
         @Body request: SignupRequest
-    ): Response<UserData>
+    ): Response<SignupResponse>
+
+    @POST("refresh")
+    suspend fun refreshToken(
+        @Body request: RefreshRequest
+    ): Response<RefreshResponse>
 
     @GET("users/me")
     suspend fun getMyProfile(
@@ -39,10 +44,9 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<GymResponse>>
 
-    // ApiService.kt
-
     @Multipart
-    @POST("gyms/")suspend fun createGym(
+    @POST("gyms/")
+    suspend fun createGym(
         @Header("Authorization") token: String,
         @Part("name") name: RequestBody,
         @Part("description") description: RequestBody?,
@@ -71,4 +75,43 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: MemberLinkRequest
     ): Response<Unit>
+
+    @PATCH("subscriptions/{subscription_id}")
+    suspend fun updateSubscription(
+        @Header("Authorization") token: String,
+        @Path("subscription_id") subscriptionId: String,
+        @Body request: SubscriptionUpdateRequest
+    ): Response<Unit>
+
+    @DELETE("subscriptions/{subscription_id}")
+    suspend fun deleteSubscription(
+        @Header("Authorization") token: String,
+        @Path("subscription_id") subscriptionId: String
+    ): Response<Unit>
+
+    @Multipart
+    @PATCH("gyms/{gym_id}")
+    suspend fun updateGym(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String,
+        @Part("name") name: RequestBody?,
+        @Part("description") description: RequestBody?,
+        @Part("address") address: RequestBody?,
+        @Part("phone") phone: RequestBody?,
+        @Part("email") email: RequestBody?,
+        @Part("price") price: RequestBody?,
+        @Part("max_capacity") maxCapacity: RequestBody?,
+        @Part image_file: MultipartBody.Part?
+    ): Response<GymCreateResponse>
+
+    @GET("gyms/stats/summary")
+    suspend fun getEnterpriseStats(
+        @Header("Authorization") token: String
+    ): Response<EnterpriseStats>
+
+    @PATCH("gyms/{gym_id}/toggle-open")
+    suspend fun toggleGymOpenStatus(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String
+    ): Response<ToggleOpenResponse>
 }

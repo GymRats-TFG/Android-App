@@ -30,28 +30,19 @@ fun SplashScreen(
     sessionManager: SessionManager
 ) {
     LaunchedEffect(Unit) {
-        delay(1500)
+        delay(1000)
 
-        val token = sessionManager.userToken.first()
+        val rToken = sessionManager.refreshToken.first()
 
-        if (!token.isNullOrEmpty()) {
+        if (!rToken.isNullOrEmpty()) {
             authViewModel.cargarPerfil()
-        } else {
-            onNavigateToAuth()
-        }
-    }
 
-    LaunchedEffect(authViewModel.success, authViewModel.errorMessage) {
-        // Si terminó el proceso (ya sea por success o porque saltó un error)
-        if (authViewModel.success) {
-            if (authViewModel.userProfile != null) {
+            if (authViewModel.success && authViewModel.userProfile != null) {
                 onNavigateToMain()
             } else {
                 onNavigateToAuth()
             }
-        } else if (authViewModel.errorMessage != null) {
-            // Si dio error de conexión o sesión expirada
-            delay(500) // Pequeño delay para que lean el Toast
+        } else {
             onNavigateToAuth()
         }
     }
