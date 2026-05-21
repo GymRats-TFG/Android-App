@@ -145,7 +145,7 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 errorMessage = "Error al actualizar datos"
             } finally {
                 isRefreshing = false
@@ -273,7 +273,7 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
                         enterpriseStats = response.body()
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 errorMessage = "Error al cargar estadísticas"
             }
         }

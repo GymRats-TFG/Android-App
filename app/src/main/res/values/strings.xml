@@ -122,4 +122,11 @@
     <string name="changes_not_saved">Cambios sin guardar</string>
     <string name="discard_changes">¿Deseas descartar los cambios?</string>
     <string name="keep_editing">Seguir editando</string>
+
+    <!--  QRScreen  -->
+    <string name="qr_register">REGISTRARSE</string>
+    <string name="qr_scan_code">Escanea tu código en recepción.</string>
+    <string name="qr_code">QR Code</string>
+    <string name="qr_user">USUARIO</string>
+    <string name="qr_increase_brightness">AUMENTA EL BRILLO PARA FACILITAR EL ESCANEO</string>
 </resources>

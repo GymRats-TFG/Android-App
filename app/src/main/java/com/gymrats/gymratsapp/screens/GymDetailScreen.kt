@@ -1,9 +1,7 @@
 package com.gymrats.gymratsapp.screens
 
-import androidx.activity.result.launch
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -53,7 +51,6 @@ fun GymDetailScreen(
 
     val currentGym = gymViewModel.selectedGym ?: gym
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     LaunchedEffect(gym.id) {
         if (isEnterprise) {

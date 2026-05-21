@@ -78,4 +78,7 @@ dependencies {
 
     // Compresor de imágenes
     implementation("id.zelory:compressor:3.0.1")
+
+    // Generación de QR
+    implementation("com.google.zxing:core:3.5.3")
 }

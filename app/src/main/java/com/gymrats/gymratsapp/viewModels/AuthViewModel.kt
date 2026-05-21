@@ -128,7 +128,7 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                     isLoading = false
                     errorMessage = "No hay token"
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 clearState()
                 sessionManager.clearSession()
                 errorMessage = "Error de conexión"

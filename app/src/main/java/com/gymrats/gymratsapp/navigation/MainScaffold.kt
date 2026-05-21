@@ -95,7 +95,7 @@ fun MainScaffold(rootNavController: NavController, authViewModel: AuthViewModel,
                 }
             }
 
-            composable(NavBarRoutes.QR.route) { QRScreen() }
+            composable(NavBarRoutes.QR.route) { QRScreen(authViewModel) }
             composable(NavBarRoutes.Scanner.route) { ScannerScreen() }
 
             composable(NavBarRoutes.Profile.route) {
