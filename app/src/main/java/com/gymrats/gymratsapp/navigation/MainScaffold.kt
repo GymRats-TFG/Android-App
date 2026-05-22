@@ -78,7 +78,8 @@ fun MainScaffold(
             if (shouldShowBottomBar) {
                 BottomNavBar(
                     navController = navController,
-                    isEnterprise = isEnterprise
+                    isEnterprise = isEnterprise,
+                    authViewModel = authViewModel
                 )
             }
         }
