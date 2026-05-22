@@ -114,4 +114,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("gym_id") gymId: String
     ): Response<ToggleOpenResponse>
+
+    @POST("gyms/{gym_id}/scan")
+    suspend fun processScan(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String,
+        @Body request: ScanRequest
+    ): Response<ScanResponse>
 }

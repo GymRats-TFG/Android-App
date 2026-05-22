@@ -103,7 +103,7 @@ fun MainScaffold(
             }
 
             composable(NavBarRoutes.QR.route) { QRScreen(authViewModel) }
-            composable(NavBarRoutes.Scanner.route) { ScannerScreen() }
+            composable(NavBarRoutes.Scanner.route) { ScannerScreen(gymViewModel) }
 
             composable(NavBarRoutes.Profile.route) {
                 ProfileScreen(

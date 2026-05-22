@@ -9,6 +9,8 @@ import com.gymrats.gymratsapp.data.EnterpriseStats
 import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.data.MemberLinkRequest
+import com.gymrats.gymratsapp.data.ScanRequest
+import com.gymrats.gymratsapp.data.ScanResponse
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.SubscriptionUpdateRequest
 import com.gymrats.gymratsapp.remote.RetrofitClient
@@ -294,6 +296,21 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
                 Result.success(nuevoEstado)
             } else {
                 Result.failure(Exception("Error al cambiar estado"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun procesarEscaneo(gymId: String, userId: String): Result<ScanResponse> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+            val response = RetrofitClient.instance.processScan("Bearer $token", gymId, ScanRequest(userId))
+
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Error en el servidor"))
             }
         } catch (e: Exception) {
             Result.failure(e)
