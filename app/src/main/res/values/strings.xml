@@ -103,6 +103,7 @@
     <string name="manage_members_add_button">Añadir socio</string>
     <string name="manage_members_filter">Filtrar por nombre o ID</string>
     <string name="manage_members_no_results">No se encontraron socios con ese filtro.</string>
+    <string name="scan_qr">Escanea el QR del socio</string>
 
     <!--  MenuItem  -->
     <string name="member_item_active">Activo</string>

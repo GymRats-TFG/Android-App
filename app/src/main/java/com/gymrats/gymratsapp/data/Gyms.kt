@@ -31,9 +31,7 @@ data class MemberInfoResponse(
 )
 
 data class MemberLinkRequest(
-    val gym_id: String,
-    val user_id: String? = null,
-    val username: String? = null,
+    val user_identifier: String,
     val start_date: String, // ISO format
     val expiration_date: String // ISO format
 )

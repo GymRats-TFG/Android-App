@@ -167,13 +167,12 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
 
             // Creamos la request. Probamos por username si no parece un UUID,
             val request = MemberLinkRequest(
-                gym_id = gymId,
-                username = identifier,
+                user_identifier = identifier,
                 start_date = hoy,
                 expiration_date = mesSiguiente
             )
 
-            val response = RetrofitClient.instance.addMemberToGym("Bearer $token", request)
+            val response = RetrofitClient.instance.addMemberToGym("Bearer $token", gymId, request)
 
             if (response.isSuccessful) {
                 cargarMiembrosGym(gymId) // Recargamos la lista automáticamente
