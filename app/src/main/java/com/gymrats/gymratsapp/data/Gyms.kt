@@ -59,6 +59,7 @@ data class UserSubscriptionResponse(
     val start_date: String,
     val expiration_date: String,
     val gym: GymResponse
+)
 data class ScanRequest(
     val user_id: String
 )
