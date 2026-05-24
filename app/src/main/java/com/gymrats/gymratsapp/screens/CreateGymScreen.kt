@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getString
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.viewModels.GymViewModel
@@ -68,9 +69,13 @@ fun CreateGymScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri -> if (uri != null) imageUri = uri }
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { Spacer(modifier = Modifier.height(24.dp)) }
@@ -87,7 +92,9 @@ fun CreateGymScreen(
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(R.string.action_close),
-                        modifier = Modifier.size(28.dp).clickable { onClose() },
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clickable { onClose() },
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -97,13 +104,21 @@ fun CreateGymScreen(
 
             item {
                 Box(
-                    modifier = Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(16.dp))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .clickable { pickImageLauncher.launch("image/*") },
                     contentAlignment = Alignment.Center
                 ) {
                     if (imageUri != null) {
-                        AsyncImage(model = imageUri, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                        AsyncImage(
+                            model = imageUri,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
                     } else {
                         Text(
                             text = stringResource(R.string.label_add_gym_image) + " *",
@@ -116,7 +131,11 @@ fun CreateGymScreen(
 
             item {
                 Spacer(modifier = Modifier.height(24.dp))
-                CustomOutlinedTextField(name, { name = it }, stringResource(R.string.label_gym_name))
+                CustomOutlinedTextField(
+                    name,
+                    { name = it },
+                    stringResource(R.string.label_gym_name)
+                )
                 Spacer(modifier = Modifier.height(12.dp))
 
                 CustomOutlinedTextField(
@@ -128,20 +147,36 @@ fun CreateGymScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                CustomOutlinedTextField(address, { address = it }, stringResource(R.string.label_gym_address))
+                CustomOutlinedTextField(
+                    address,
+                    { address = it },
+                    stringResource(R.string.label_gym_address)
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                CustomOutlinedTextField(phone, { phone = it }, stringResource(R.string.label_phone), KeyboardType.Phone)
+                CustomOutlinedTextField(
+                    phone,
+                    { phone = it },
+                    stringResource(R.string.label_phone),
+                    KeyboardType.Phone
+                )
                 Spacer(modifier = Modifier.height(12.dp))
-                CustomOutlinedTextField(email, { email = it }, stringResource(R.string.label_email_contact), KeyboardType.Email)
+                CustomOutlinedTextField(
+                    email,
+                    { email = it },
+                    stringResource(R.string.label_email_contact),
+                    KeyboardType.Email
+                )
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Row(Modifier.fillMaxWidth()) {
                     Box(Modifier.weight(1f)) {
                         CustomOutlinedTextField(
                             value = price,
-                            onValueChange = { if (it.isEmpty() || it.matches(Regex("""^\d*\.?\d*$"""))) price = it },
+                            onValueChange = {
+                                if (it.isEmpty() || it.matches(Regex("""^\d*\.?\d*$"""))) price = it
+                            },
                             label = stringResource(R.string.label_price_euro),
                             keyboardType = KeyboardType.Decimal
                         )
@@ -177,17 +212,42 @@ fun CreateGymScreen(
                             )
                             isLoading = false
                             result.onSuccess {
-                                Toast.makeText(context, context.getString(R.string.gym_created), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.gym_created),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 onSuccess()
-                            }.onFailure { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
+                            }.onFailure { exception ->
+                                val errorMsg = exception.message ?: ""
+                                val friendlyError = when {
+                                    errorMsg.contains("email", ignoreCase = true) -> {
+                                        getString(context,R.string.error_email)
+                                    }
+                                    errorMsg.contains("body", ignoreCase = true) -> {
+                                        getString(context,R.string.error_fields)
+                                    }
+                                    else -> errorMsg
+                                }
+
+                                Toast.makeText(context, friendlyError, Toast.LENGTH_LONG).show()
+                            }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
                     shape = RoundedCornerShape(12.dp),
                     enabled = isFormValid
                 ) {
-                    if (isLoading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                    else Text(stringResource(R.string.button_create_gym), fontFamily = poppinsSemiBold)
+                    if (isLoading) CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    else Text(
+                        stringResource(R.string.button_create_gym),
+                        fontFamily = poppinsSemiBold
+                    )
                 }
                 Spacer(modifier = Modifier.height(32.dp))
             }

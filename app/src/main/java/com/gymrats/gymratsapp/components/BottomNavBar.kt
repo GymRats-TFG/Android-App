@@ -30,9 +30,14 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.navigation.NavBarRoutes
+import com.gymrats.gymratsapp.viewModels.AuthViewModel
 
 @Composable
-fun BottomNavBar(navController: NavController, isEnterprise: Boolean) {
+fun BottomNavBar(
+    navController: NavController,
+    isEnterprise: Boolean,
+    authViewModel: AuthViewModel
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -52,7 +57,11 @@ fun BottomNavBar(navController: NavController, isEnterprise: Boolean) {
             val homeSelected = currentRoute == NavBarRoutes.Home.route
             NavigationBarItem(
                 selected = homeSelected,
-                onClick = { navigateTo(navController, NavBarRoutes.Home.route) },
+                onClick = {
+                    if (!authViewModel.isLoading) {
+                        navigateTo(navController, NavBarRoutes.Home.route)
+                    }
+                },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Home,
@@ -70,14 +79,20 @@ fun BottomNavBar(navController: NavController, isEnterprise: Boolean) {
                 colors = navigationItemColors()
             )
 
-            val middleRoute = if (isEnterprise) NavBarRoutes.Scanner.route else NavBarRoutes.QR.route
-            val middleLabel = if (isEnterprise) stringResource(R.string.scanner) else stringResource(R.string.my_qr)
+            val middleRoute =
+                if (isEnterprise) NavBarRoutes.Scanner.route else NavBarRoutes.QR.route
+            val middleLabel =
+                if (isEnterprise) stringResource(R.string.scanner) else stringResource(R.string.my_qr)
             val middleIcon = if (isEnterprise) Icons.Default.QrCodeScanner else Icons.Default.QrCode
             val middleSelected = currentRoute == middleRoute
 
             NavigationBarItem(
                 selected = middleSelected,
-                onClick = { navigateTo(navController, middleRoute) },
+                onClick = {
+                    if (!authViewModel.isLoading) {
+                        navigateTo(navController, middleRoute)
+                    }
+                },
                 icon = {
                     Icon(
                         imageVector = middleIcon,
@@ -98,7 +113,11 @@ fun BottomNavBar(navController: NavController, isEnterprise: Boolean) {
             val profileSelected = currentRoute == NavBarRoutes.Profile.route
             NavigationBarItem(
                 selected = profileSelected,
-                onClick = { navigateTo(navController, NavBarRoutes.Profile.route) },
+                onClick = {
+                    if (!authViewModel.isLoading) {
+                        navigateTo(navController, NavBarRoutes.Profile.route)
+                    }
+                },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Person,
