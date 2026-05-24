@@ -78,7 +78,8 @@ fun MainScaffold(
             if (shouldShowBottomBar) {
                 BottomNavBar(
                     navController = navController,
-                    isEnterprise = isEnterprise
+                    isEnterprise = isEnterprise,
+                    authViewModel = authViewModel
                 )
             }
         }
@@ -103,7 +104,7 @@ fun MainScaffold(
             }
 
             composable(NavBarRoutes.QR.route) { QRScreen(authViewModel) }
-            composable(NavBarRoutes.Scanner.route) { ScannerScreen() }
+            composable(NavBarRoutes.Scanner.route) { ScannerScreen(gymViewModel) }
 
             composable(NavBarRoutes.Profile.route) {
                 ProfileScreen(
@@ -193,7 +194,12 @@ fun MainScaffold(
                 EditGymScreen(
                     gymViewModel = gymViewModel,
                     onClose = { navController.popBackStack() },
-                    onSuccess = { navController.popBackStack() }
+                    onSuccess = { navController.popBackStack() },
+                    onDelete = {
+                        navController.navigate(NavBarRoutes.Home.route) {
+                            popUpTo(NavBarRoutes.Home.route) { inclusive = true }
+                        }
+                    }
                 )
             }
         }

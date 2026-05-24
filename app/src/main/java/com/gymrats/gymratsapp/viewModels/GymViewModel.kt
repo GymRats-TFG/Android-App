@@ -9,6 +9,8 @@ import com.gymrats.gymratsapp.data.EnterpriseStats
 import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.data.MemberInfoResponse
 import com.gymrats.gymratsapp.data.MemberLinkRequest
+import com.gymrats.gymratsapp.data.ScanRequest
+import com.gymrats.gymratsapp.data.ScanResponse
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.SubscriptionUpdateRequest
 import com.gymrats.gymratsapp.remote.RetrofitClient
@@ -165,13 +167,12 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
 
             // Creamos la request. Probamos por username si no parece un UUID,
             val request = MemberLinkRequest(
-                gym_id = gymId,
-                username = identifier,
+                user_identifier = identifier,
                 start_date = hoy,
                 expiration_date = mesSiguiente
             )
 
-            val response = RetrofitClient.instance.addMemberToGym("Bearer $token", request)
+            val response = RetrofitClient.instance.addMemberToGym("Bearer $token", gymId, request)
 
             if (response.isSuccessful) {
                 cargarMiembrosGym(gymId) // Recargamos la lista automáticamente
@@ -298,5 +299,32 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    suspend fun procesarEscaneo(gymId: String, userId: String): Result<ScanResponse> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+            val response = RetrofitClient.instance.processScan("Bearer $token", gymId, ScanRequest(userId))
+
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Error en el servidor"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun eliminarGym(gymId: String): Result<String> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+            val response = RetrofitClient.instance.deleteGym("Bearer $token", gymId)
+            if (response.isSuccessful) {
+                Result.success("Sede eliminada correctamente")
+            } else {
+                Result.failure(Exception("Error al eliminar la sede"))
+            }
+        } catch (e: Exception) { Result.failure(e) }
     }
 }

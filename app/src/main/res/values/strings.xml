@@ -75,6 +75,8 @@
     <string name="label_max_capacity_short">Aforo máx.</string>
     <string name="gym_created">¡Sede creada correctamente!</string>
     <string name="error_location_not_found">No se ha podido localizar la ubicación</string>
+    <string name="error_email">El formato del correo electrónico no es válido</string>
+    <string name="error_fields">Revisa los datos introducidos, hay campos con formato incorrecto</string>
 
     <!--  GymCard  -->
     <string name="gym_card_current_capacity">Aforo Actual</string>
@@ -103,6 +105,7 @@
     <string name="manage_members_add_button">Añadir socio</string>
     <string name="manage_members_filter">Filtrar por nombre o ID</string>
     <string name="manage_members_no_results">No se encontraron socios con ese filtro.</string>
+    <string name="scan_qr">Escanea el QR del socio</string>
 
     <!--  MenuItem  -->
     <string name="member_item_active">Activo</string>
@@ -122,6 +125,9 @@
     <string name="changes_not_saved">Cambios sin guardar</string>
     <string name="discard_changes">¿Deseas descartar los cambios?</string>
     <string name="keep_editing">Seguir editando</string>
+    <string name="delete_gym_delete_gym">Eliminar sede</string>
+    <string name="delete_gym_sure_remove_msg1">¿Estás seguro de que deseas eliminar la sede</string>
+    <string name="delete_gym_sure_remove_msg2">ubicada en la dirección</string>
 
     <!--  QRScreen  -->
     <string name="qr_register">REGISTRARSE</string>
@@ -129,4 +135,14 @@
     <string name="qr_code">QR Code</string>
     <string name="qr_user">USUARIO</string>
     <string name="qr_increase_brightness">AUMENTA EL BRILLO PARA FACILITAR EL ESCANEO</string>
+
+    <!--  ScannerScreen  -->
+    <string name="select_gym">Selecciona sede</string>
+    <string name="access_granted">PERMITIDO</string>
+    <string name="access_denied">RECHAZADO</string>
+    <string name="partner">Socio</string>
+    <string name="select_location">Seleccionar sede</string>
+    <string name="grant_permission">Conceder permiso</string>
+    <string name="camera_needed">Se necesita la cámara para escanear</string>
+    <string name="turn_camera">Girar cámara</string>
 </resources>

@@ -31,9 +31,7 @@ data class MemberInfoResponse(
 )
 
 data class MemberLinkRequest(
-    val gym_id: String,
-    val user_id: String? = null,
-    val username: String? = null,
+    val user_identifier: String,
     val start_date: String, // ISO format
     val expiration_date: String // ISO format
 )
@@ -53,4 +51,15 @@ data class EnterpriseStats(
 data class ToggleOpenResponse(
     val message: String,
     val is_open: Boolean
+)
+
+data class ScanRequest(
+    val user_id: String
+)
+
+data class ScanResponse(
+    val success: Boolean,
+    val action: String?, // "entry" o "exit"
+    val message: String,
+    val user_name: String?
 )
