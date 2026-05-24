@@ -44,6 +44,11 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<List<GymResponse>>
 
+    @GET("gyms/user/subscriptions")
+    suspend fun getUserSubscriptions(
+        @Header("Authorization") token: String
+    ): Response<List<UserSubscriptionResponse>>
+
     @Multipart
     @POST("gyms/")
     suspend fun createGym(
