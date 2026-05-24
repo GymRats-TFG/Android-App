@@ -122,4 +122,10 @@ interface ApiService {
         @Path("gym_id") gymId: String,
         @Body request: ScanRequest
     ): Response<ScanResponse>
+
+    @DELETE("gyms/{gym_id}/delete")
+    suspend fun deleteGym(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String
+    ): Response<Unit>
 }

@@ -315,4 +315,16 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             Result.failure(e)
         }
     }
+
+    suspend fun eliminarGym(gymId: String): Result<String> {
+        return try {
+            val token = sessionManager.userToken.first() ?: ""
+            val response = RetrofitClient.instance.deleteGym("Bearer $token", gymId)
+            if (response.isSuccessful) {
+                Result.success("Sede eliminada correctamente")
+            } else {
+                Result.failure(Exception("Error al eliminar la sede"))
+            }
+        } catch (e: Exception) { Result.failure(e) }
+    }
 }

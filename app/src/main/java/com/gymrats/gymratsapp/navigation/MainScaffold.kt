@@ -194,7 +194,12 @@ fun MainScaffold(
                 EditGymScreen(
                     gymViewModel = gymViewModel,
                     onClose = { navController.popBackStack() },
-                    onSuccess = { navController.popBackStack() }
+                    onSuccess = { navController.popBackStack() },
+                    onDelete = {
+                        navController.navigate(NavBarRoutes.Home.route) {
+                            popUpTo(NavBarRoutes.Home.route) { inclusive = true }
+                        }
+                    }
                 )
             }
         }

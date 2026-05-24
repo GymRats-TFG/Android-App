@@ -123,6 +123,9 @@
     <string name="changes_not_saved">Cambios sin guardar</string>
     <string name="discard_changes">¿Deseas descartar los cambios?</string>
     <string name="keep_editing">Seguir editando</string>
+    <string name="delete_gym_delete_gym">Eliminar sede</string>
+    <string name="delete_gym_sure_remove_msg1">¿Estás seguro de que deseas eliminar la sede</string>
+    <string name="delete_gym_sure_remove_msg2">ubicada en la dirección</string>
 
     <!--  QRScreen  -->
     <string name="qr_register">REGISTRARSE</string>
