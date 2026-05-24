@@ -54,3 +54,11 @@ data class ToggleOpenResponse(
     val message: String,
     val is_open: Boolean
 )
+
+data class UserSubscriptionResponse(
+    val subscription_id: String,
+    val status: String,
+    val start_date: String,
+    val expiration_date: String,
+    val gym: GymResponse
+)
