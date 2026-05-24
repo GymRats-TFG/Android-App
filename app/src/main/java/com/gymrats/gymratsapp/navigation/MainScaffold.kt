@@ -38,12 +38,14 @@ import com.gymrats.gymratsapp.screens.UserHomeScreen
 import com.gymrats.gymratsapp.viewModels.GymViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.gymrats.gymratsapp.viewModels.UserHomeViewModel
 
 @Composable
 fun MainScaffold(
     rootNavController: NavController,
     authViewModel: AuthViewModel,
-    sessionManager: SessionManager
+    sessionManager: SessionManager,
+    userHomeViewModel: UserHomeViewModel
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -99,7 +101,9 @@ fun MainScaffold(
                         }
                     )
                 } else {
-                    UserHomeScreen()
+                    UserHomeScreen(
+                        viewModel = userHomeViewModel
+                    )
                 }
             }
 
