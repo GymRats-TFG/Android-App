@@ -75,9 +75,10 @@ interface ApiService {
         @Path("gym_id") gymId: String
     ): Response<GymResponse>
 
-    @POST("gyms/members")
+    @POST("gyms/{gym_id}/add_member")
     suspend fun addMemberToGym(
         @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String,
         @Body request: MemberLinkRequest
     ): Response<Unit>
 
@@ -119,4 +120,17 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("gym_id") gymId: String
     ): Response<ToggleOpenResponse>
+
+    @POST("gyms/{gym_id}/scan")
+    suspend fun processScan(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String,
+        @Body request: ScanRequest
+    ): Response<ScanResponse>
+
+    @DELETE("gyms/{gym_id}/delete")
+    suspend fun deleteGym(
+        @Header("Authorization") token: String,
+        @Path("gym_id") gymId: String
+    ): Response<Unit>
 }
