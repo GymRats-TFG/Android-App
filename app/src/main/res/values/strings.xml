@@ -75,6 +75,8 @@
     <string name="label_max_capacity_short">Aforo máx.</string>
     <string name="gym_created">¡Sede creada correctamente!</string>
     <string name="error_location_not_found">No se ha podido localizar la ubicación</string>
+    <string name="error_email">El formato del correo electrónico no es válido</string>
+    <string name="error_fields">Revisa los datos introducidos, hay campos con formato incorrecto</string>
 
     <!--  GymCard  -->
     <string name="gym_card_current_capacity">Aforo Actual</string>
