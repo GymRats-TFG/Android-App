@@ -115,6 +115,7 @@ fun MainScaffold(
                     authViewModel = authViewModel,
                     gymViewModel = gymViewModel,
                     userProfile = authViewModel.userProfile,
+                    userHomeViewModel = userHomeViewModel,
                     onLogout = {
                         scope.launch {
                             authViewModel.clearState()

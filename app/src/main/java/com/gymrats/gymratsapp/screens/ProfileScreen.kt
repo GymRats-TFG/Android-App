@@ -33,11 +33,13 @@ import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.data.UserData
 import com.gymrats.gymratsapp.ui.theme.GymRatsTheme
 import com.gymrats.gymratsapp.viewModels.GymViewModel
+import com.gymrats.gymratsapp.viewModels.UserHomeViewModel
 
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
     gymViewModel: GymViewModel,
+    userHomeViewModel: UserHomeViewModel,
     userProfile: UserData?,
     onLogout: () -> Unit,
     onEditClick: () -> Unit,
@@ -49,9 +51,11 @@ fun ProfileScreen(
 
     LaunchedEffect(Unit) {
         authViewModel.cargarPerfil()
+        userHomeViewModel.loadSubscriptions()
         if (userProfile?.is_enterprise == true) {
             gymViewModel.cargarStatsEnterprise()
             gymViewModel.cargarSedes()
+
         }
     }
 
@@ -79,6 +83,9 @@ fun ProfileScreen(
     val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
 
     val isEnterprise = userProfile.is_enterprise
+    val activeSubscriptions = userHomeViewModel.subscriptions.filter {
+        it.status == "active"
+    }
 
     GymRatsTheme {
         LazyColumn(
@@ -203,7 +210,44 @@ fun ProfileScreen(
                         showVerTodo = true
                     )
                 }
-                item { EmptyStateCard(stringResource(R.string.empty_no_recent_activity)) }
+                if (userHomeViewModel.subscriptions.isEmpty()) {
+
+                    item {
+                        EmptyStateCard(
+                            stringResource(R.string.empty_no_recent_activity)
+                        )
+                    }
+
+                } else {
+
+                    items(userHomeViewModel.subscriptions.take(3).size) { index ->
+
+                        val subscription = userHomeViewModel.subscriptions[index]
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp)
+                        ) {
+
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+
+                                Text(
+                                    text = subscription.gym.name,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = "Inicio: ${subscription.start_date}"
+                                )
+                            }
+                        }
+                    }
+                }
 
                 item {
                     SectionTitle(
@@ -211,8 +255,44 @@ fun ProfileScreen(
                         showVerTodo = true
                     )
                 }
-                item { EmptyStateCard(stringResource(R.string.empty_no_active_subscriptions)) }
-            }
+                if (activeSubscriptions.isEmpty()) {
+
+                    item {
+                        EmptyStateCard(
+                            stringResource(R.string.empty_no_active_subscriptions)
+                        )
+                    }
+
+                } else {
+
+                    items(activeSubscriptions.size) { index ->
+
+                        val subscription = activeSubscriptions[index]
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp)
+                        ) {
+
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+
+                                Text(
+                                    text = subscription.gym.name,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = "Expira: ${subscription.expiration_date}"
+                                )
+                            }
+                        }
+                    }
+                }            }
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
         }
