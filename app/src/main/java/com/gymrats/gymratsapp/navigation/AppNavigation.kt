@@ -16,6 +16,7 @@ import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.screens.LoginScreen
 import com.gymrats.gymratsapp.screens.SignupScreen
 import com.gymrats.gymratsapp.screens.SplashScreen
+import com.gymrats.gymratsapp.viewModels.UserHomeViewModel
 
 @Composable
 fun AppNavigation(){
@@ -26,6 +27,16 @@ fun AppNavigation(){
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return AuthViewModel(context.applicationContext as Application, sessionManager) as T
+        }
+    })
+
+    val userHomeViewModel: UserHomeViewModel = viewModel(factory = object :
+        ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return UserHomeViewModel(
+                context.applicationContext as Application,
+                sessionManager
+            ) as T
         }
     })
 
@@ -97,7 +108,7 @@ fun AppNavigation(){
 
         // Navegación entre pantallas una vez autenticado
         composable(Routes.Main.route) {
-            MainScaffold(navController, authViewModel, sessionManager)
+            MainScaffold(navController, authViewModel, sessionManager, userHomeViewModel)
         }
     }
 }
