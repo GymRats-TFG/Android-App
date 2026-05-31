@@ -54,8 +54,7 @@ fun ProfileScreen(
         userHomeViewModel.loadSubscriptions()
         if (userProfile?.is_enterprise == true) {
             gymViewModel.cargarStatsEnterprise()
-            gymViewModel.cargarSedes()
-
+            gymViewModel.cargarSedes(true)
         }
     }
 

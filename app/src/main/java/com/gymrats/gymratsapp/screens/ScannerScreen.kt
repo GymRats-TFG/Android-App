@@ -59,7 +59,7 @@ fun ScannerScreen(gymViewModel: GymViewModel) {
     val poppinsBold = FontFamily(Font(R.font.poppins_bold))
 
     LaunchedEffect(Unit) {
-        if (gyms.isEmpty()) gymViewModel.cargarSedes()
+        if (gyms.isEmpty()) gymViewModel.cargarSedes(true)
     }
 
     LaunchedEffect(gyms) {

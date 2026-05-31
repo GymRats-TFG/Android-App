@@ -102,7 +102,12 @@ fun MainScaffold(
                     )
                 } else {
                     UserHomeScreen(
-                        viewModel = userHomeViewModel
+                        viewModel = userHomeViewModel,
+                        authViewModel = authViewModel,
+                        gymViewModel = gymViewModel,
+                        onGymClick = { gymId ->
+                            navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
+                        }
                     )
                 }
             }

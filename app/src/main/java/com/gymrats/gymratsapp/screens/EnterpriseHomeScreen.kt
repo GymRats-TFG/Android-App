@@ -48,12 +48,12 @@ fun EnterpriseHomeScreen(
 
     // Cargar sedes al iniciar
     LaunchedEffect(Unit) {
-        gymViewModel.cargarSedes()
+        gymViewModel.cargarSedes(true)
     }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
-        onRefresh = { gymViewModel.cargarSedes() },
+        onRefresh = { gymViewModel.cargarSedes(true) },
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {

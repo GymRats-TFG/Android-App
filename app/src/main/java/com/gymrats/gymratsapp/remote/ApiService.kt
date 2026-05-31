@@ -133,4 +133,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("gym_id") gymId: String
     ): Response<Unit>
+
+    @GET("gyms/")
+    suspend fun getAllGyms(
+        @Header("Authorization") token: String
+    ): Response<List<GymResponse>>
 }

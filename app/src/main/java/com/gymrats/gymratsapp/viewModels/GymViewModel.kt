@@ -42,14 +42,20 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
     var enterpriseStats by mutableStateOf<EnterpriseStats?>(null)
         private set
 
-    fun cargarSedes() {
+    fun cargarSedes(isEnterprise: Boolean) {
         viewModelScope.launch {
             isRefreshing = true
             errorMessage = null
             try {
                 val token = sessionManager.userToken.first()
                 if (!token.isNullOrEmpty()) {
-                    val response = RetrofitClient.instance.getMyGyms("Bearer $token")
+                    // ELEGIR ENDPOINT SEGÚN EL ROL
+                    val response = if (isEnterprise) {
+                        RetrofitClient.instance.getMyGyms("Bearer $token")
+                    } else {
+                        RetrofitClient.instance.getAllGyms("Bearer $token")
+                    }
+
                     if (response.isSuccessful) {
                         gyms = response.body() ?: emptyList()
                     } else {
@@ -100,7 +106,7 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
             )
 
             if (response.isSuccessful) {
-                cargarSedes()
+                cargarSedes(true)
                 Result.success("Sede creada correctamente")
             } else {
                 Result.failure(Exception(response.errorBody()?.string() ?: "Error desconocido"))
@@ -253,7 +259,7 @@ class GymViewModel(private val sessionManager: SessionManager) : ViewModel() {
                 val updatedGym = response.body()!!.gym
                 // Actualizar el estado local
                 selectedGym = updatedGym
-                cargarSedes() // Refrescar la lista general
+                cargarSedes(true) // Refrescar la lista general
                 Result.success(updatedGym)
             } else {
                 val errorMsg = response.errorBody()?.string() ?: "Error desconocido"

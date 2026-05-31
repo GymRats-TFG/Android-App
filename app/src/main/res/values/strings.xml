@@ -145,4 +145,8 @@
     <string name="grant_permission">Conceder permiso</string>
     <string name="camera_needed">Se necesita la cámara para escanear</string>
     <string name="turn_camera">Girar cámara</string>
+
+    <!--  UserHomeScreen  -->
+    <string name="active_gyms">Mis gimnasios activos</string>
+    <string name="discover">DESCUBRE LOS ALREDEDORES</string>
 </resources>
