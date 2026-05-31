@@ -138,4 +138,9 @@ interface ApiService {
     suspend fun getAllGyms(
         @Header("Authorization") token: String
     ): Response<List<GymResponse>>
+
+    @GET("users/activity")
+    suspend fun getUserActivity(
+        @Header("Authorization") token: String
+    ): Response<List<UserActivityResponse>>
 }

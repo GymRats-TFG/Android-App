@@ -70,3 +70,10 @@ data class ScanResponse(
     val message: String,
     val user_name: String?
 )
+
+data class UserActivityResponse(
+    val id: String,
+    val gym_name: String,
+    val action_type: String, // "entry" o "exit"
+    val recorded_at: String
+)

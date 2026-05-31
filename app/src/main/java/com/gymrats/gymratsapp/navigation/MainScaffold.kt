@@ -25,6 +25,7 @@ import androidx.navigation.navArgument
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
 import com.gymrats.gymratsapp.components.BottomNavBar
 import com.gymrats.gymratsapp.data.SessionManager
+import com.gymrats.gymratsapp.screens.ActivityHistoryScreen
 import com.gymrats.gymratsapp.screens.CreateGymScreen
 import com.gymrats.gymratsapp.screens.EditGymScreen
 import com.gymrats.gymratsapp.screens.EditProfileScreen
@@ -72,6 +73,7 @@ fun MainScaffold(
         "${NavBarRoutes.GymDetail.route}/{gymId}" -> false
         "${NavBarRoutes.ManageMembers.route}/{gymId}" -> false
         NavBarRoutes.EditGym.route -> false
+        NavBarRoutes.ActivityHistory.route -> false
         else -> true
     }
 
@@ -138,6 +140,9 @@ fun MainScaffold(
                     onCreateGym = { navController.navigate(NavBarRoutes.CreateGym.route) },
                     onGymClick = { gymId ->
                         navController.navigate("${NavBarRoutes.GymDetail.route}/$gymId")
+                    },
+                    onSeeAllActivity = {
+                        navController.navigate(NavBarRoutes.ActivityHistory.route)
                     }
                 )
             }
@@ -210,6 +215,13 @@ fun MainScaffold(
                             popUpTo(NavBarRoutes.Home.route) { inclusive = true }
                         }
                     }
+                )
+            }
+
+            composable(NavBarRoutes.ActivityHistory.route) {
+                ActivityHistoryScreen(
+                    viewModel = userHomeViewModel,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }

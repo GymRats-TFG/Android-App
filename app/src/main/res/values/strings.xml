@@ -149,4 +149,15 @@
     <!--  UserHomeScreen  -->
     <string name="active_gyms">Mis gimnasios activos</string>
     <string name="discover">DESCUBRE LOS ALREDEDORES</string>
+
+    <!--  ActivityHistoryScreen  -->
+    <string name="history">Historial de actividad</string>
+
+    <!--  ProfileScreen  -->
+    <string name="recent_activity">Actividad reciente</string>
+    <string name="my_subscriptions">Mis suscripciones</string>
+
+    <!--  SubscriptionsDetailedCard  -->
+    <string name="start">INICIO</string>
+    <string name="end">FIN</string>
 </resources>
