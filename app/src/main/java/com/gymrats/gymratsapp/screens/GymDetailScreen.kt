@@ -49,13 +49,16 @@ fun GymDetailScreen(
     val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
     val poppinsSemiBold = FontFamily(Font(R.font.poppins_semibold))
 
-    val currentGym = gymViewModel.selectedGym ?: gym
+    val currentGym = if (gymViewModel.selectedGym?.id == gym.id) {
+        gymViewModel.selectedGym!!
+    } else {
+        gym
+    }
+
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(gym.id) {
-        if (isEnterprise) {
-            gymViewModel.cargarMiembrosGym(gym.id)
-        }
+        gymViewModel.cargarDatosDetalle(gym.id, isEnterprise)
     }
 
     val members = gymViewModel.gymMembers
