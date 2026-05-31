@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.gymrats.gymratsapp.data.GymResponse
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.UserSubscriptionResponse
 import com.gymrats.gymratsapp.remote.RetrofitClient
@@ -20,13 +21,19 @@ class UserHomeViewModel(
     var subscriptions by mutableStateOf<List<UserSubscriptionResponse>>(emptyList())
         private set
 
+    var gyms by mutableStateOf<List<GymResponse>>(emptyList())
+        private set
+
     var isLoading by mutableStateOf(false)
         private set
 
     var errorMessage by mutableStateOf<String?>(null)
         private set
 
-    fun loadSubscriptions() {
+    var recentGyms by mutableStateOf<List<GymResponse>>(emptyList())
+        private set
+
+    fun loadData() {
 
         viewModelScope.launch {
 
@@ -43,17 +50,37 @@ class UserHomeViewModel(
                     return@launch
                 }
 
-                val response = RetrofitClient.instance.getUserSubscriptions(
-                    "Bearer $token"
-                )
+                // Suscripciones
+                val subscriptionsResponse =
+                    RetrofitClient.instance.getUserSubscriptions(
+                        "Bearer $token"
+                    )
 
-                if (response.isSuccessful && response.body() != null) {
+                if (
+                    subscriptionsResponse.isSuccessful &&
+                    subscriptionsResponse.body() != null
+                ) {
 
-                    subscriptions = response.body()!!
+                    subscriptions = subscriptionsResponse.body()!!
 
-                } else {
+                }
 
-                    errorMessage = "Error ${response.code()}"
+                // Gimnasios
+                val gymsResponse =
+                    RetrofitClient.instance.getAllGyms(
+                        "Bearer $token"
+                    )
+                println("CODE: ${gymsResponse.code()}")
+                println("BODY: ${gymsResponse.body()}")
+                println("ERROR: ${gymsResponse.errorBody()?.string()}")
+
+                if (
+                    gymsResponse.isSuccessful &&
+                    gymsResponse.body() != null
+                ) {
+
+                    gyms = gymsResponse.body()!!
+                    println("GYMS CARGADOS: $gyms")
 
                 }
 
@@ -67,5 +94,13 @@ class UserHomeViewModel(
 
             }
         }
+    }
+    fun addRecentGym(gym: GymResponse) {
+
+        recentGyms =
+            listOf(gym) +
+                    recentGyms.filter { it.id != gym.id }
+
+        recentGyms = recentGyms.take(5)
     }
 }

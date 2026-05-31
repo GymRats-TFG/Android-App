@@ -89,6 +89,11 @@ interface ApiService {
         @Body request: SubscriptionUpdateRequest
     ): Response<Unit>
 
+    @GET("/gyms/all")
+    suspend fun getAllGyms(
+        @Header("Authorization") token: String
+    ): Response<List<GymResponse>>
+
     @DELETE("subscriptions/{subscription_id}")
     suspend fun deleteSubscription(
         @Header("Authorization") token: String,
@@ -133,4 +138,5 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("gym_id") gymId: String
     ): Response<Unit>
+
 }

@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://gymrats-api-jrrw.onrender.com/"
-
+    //private const val BASE_URL = "https://gymrats-api-jrrw.onrender.com/"
+    const val BASE_URL = "http://10.0.2.2:8000/"
     // Configuramos OkHttpClient con timeouts y logging para debug
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)

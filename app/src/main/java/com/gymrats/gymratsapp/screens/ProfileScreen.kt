@@ -51,7 +51,7 @@ fun ProfileScreen(
 
     LaunchedEffect(Unit) {
         authViewModel.cargarPerfil()
-        userHomeViewModel.loadSubscriptions()
+        userHomeViewModel.loadData()
         if (userProfile?.is_enterprise == true) {
             gymViewModel.cargarStatsEnterprise()
             gymViewModel.cargarSedes()
@@ -210,7 +210,9 @@ fun ProfileScreen(
                         showVerTodo = true
                     )
                 }
-                if (userHomeViewModel.subscriptions.isEmpty()) {
+
+                // CAMBIO AQUÍ
+                if (userHomeViewModel.recentGyms.isEmpty()) {
 
                     item {
                         EmptyStateCard(
@@ -220,29 +222,37 @@ fun ProfileScreen(
 
                 } else {
 
-                    items(userHomeViewModel.subscriptions.take(3).size) { index ->
+                    // CAMBIO AQUÍ
+                    items(userHomeViewModel.recentGyms.take(3).size) { index ->
 
-                        val subscription = userHomeViewModel.subscriptions[index]
+                        // CAMBIO AQUÍ
+                        val gym = userHomeViewModel.recentGyms[index]
 
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 6.dp)
+                                // CAMBIO AQUÍ
+                                .clickable {
+                                    onGymClick(gym.id)
+                                }
                         ) {
 
                             Column(
                                 modifier = Modifier.padding(16.dp)
                             ) {
 
+                                // CAMBIO AQUÍ
                                 Text(
-                                    text = subscription.gym.name,
+                                    text = gym.name,
                                     style = MaterialTheme.typography.titleMedium
                                 )
 
                                 Spacer(modifier = Modifier.height(4.dp))
 
+                                // CAMBIO AQUÍ
                                 Text(
-                                    text = "Inicio: ${subscription.start_date}"
+                                    text = gym.address
                                 )
                             }
                         }
@@ -255,6 +265,7 @@ fun ProfileScreen(
                         showVerTodo = true
                     )
                 }
+
                 if (activeSubscriptions.isEmpty()) {
 
                     item {
@@ -292,7 +303,8 @@ fun ProfileScreen(
                             }
                         }
                     }
-                }            }
+                }
+            }
 
             item { Spacer(modifier = Modifier.height(100.dp)) }
         }

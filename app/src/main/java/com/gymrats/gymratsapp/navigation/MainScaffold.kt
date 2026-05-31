@@ -102,7 +102,20 @@ fun MainScaffold(
                     )
                 } else {
                     UserHomeScreen(
-                        viewModel = userHomeViewModel
+                        viewModel = userHomeViewModel,
+                        onGymClick = { gymId ->
+
+                            val gym =
+                                userHomeViewModel.gyms.find {
+                                    it.id == gymId
+                                }
+
+                            if (gym != null) {
+                                userHomeViewModel.addRecentGym(gym)
+                            }
+
+                            navController.navigate("gym_detail/$gymId")
+                        }
                     )
                 }
             }
@@ -165,7 +178,11 @@ fun MainScaffold(
                 val gymId = backStackEntry.arguments?.getString("gymId")
 
                 // Buscamos el objeto gym en la lista del ViewModel usando el ID
-                val gym = gymViewModel.gyms.find { it.id == gymId }
+                val gym = if (isEnterprise) {
+                    gymViewModel.gyms.find { it.id == gymId }
+                } else {
+                    userHomeViewModel.gyms.find { it.id == gymId }
+                }
 
                 if (gym != null) {
                     GymDetailScreen(
