@@ -240,7 +240,7 @@ fun GymDetailScreen(
 
                     InfoBadge(
                         icon = Icons.Default.Payments,
-                        text = gym.price.toString() + "€ / mes",
+                        text = gym.price.toString() + "€ / "+stringResource(R.string.month),
                         fontFamily = poppinsBold,
                         color = MaterialTheme.colorScheme.secondary
                     )

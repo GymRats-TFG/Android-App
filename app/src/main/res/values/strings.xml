@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">GymRats</string>
-    <string name="gymrats_logo">GymRats Logo</string>
+    <string name="app_name" translatable="false">GymRats</string>
+    <string name="gymrats_logo" translatable="false">GymRats Logo</string>
 
     <!--  LoginScreen  -->
     <string name="login">Iniciar Sesión</string>
@@ -96,6 +96,7 @@
     <string name="gym_detail_contact_info">Contacto</string>
     <string name="gym_detail_no_description">Sin descripción disponible.</string>
     <string name="gym_detail_subs_list">Aquí aparecerá la lista de socios inscritos en esta sede.</string>
+    <string name="month">mes</string>
 
     <!--  ManageMembersScreen  -->
     <string name="manage_members_title">Gestionar Socios</string>
