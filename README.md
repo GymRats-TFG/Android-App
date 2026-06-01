@@ -59,28 +59,28 @@ Android-APP/
 
 ### 👤 Usuario estándar
 
-| Pantalla | Descripción                                                | Ruta de imagen sugerida                                                                     |
-|----------|------------------------------------------------------------|---------------------------------------------------------------------------------------------|
-| **Inicio de sesión** | Autenticación con email y contraseña                       | ![Login](./images/user/login.png)                                                           |
-| **Registro** | Creación de nueva cuenta con validación de contraseña      | ![Singup](./images/user/signup.png)                                                         |
-| **Inicio (Home)** | Vista de suscripciones activas y gimnasios descubiertos    | ![User Home](./images/user/home.png)                                                        |
-| **Detalle de gimnasio** | Información completa, estado de apertura y aforo actual    | ![User Gym Detail](./images/user/gym_detail.png)                                            |
-| **Mi código QR** | Código personal para escaneo en acceso a gimnasios         | ![QR Code](./images/user/qr_code.png)                                                       |
-| **Perfil de usuario** | Datos personales, foto de perfil y estado de suscripciones | ![User Profile](./images/user/profile.png)                                                  |
-| **Editar perfil** | Actualización de nombre, username y avatar                 | ![Edit Profile](./images/user/edit_profile.png)                                             |
-| **Historial de actividad** | Registro cronológico de accesos a gimnasios                | ![Activity History](./images/user/activity_history.png) |
+| Pantalla | Descripción                                                | Imagen                                                  |
+|----------|------------------------------------------------------------|---------------------------------------------------------|
+| **Inicio de sesión** | Autenticación con email y contraseña                       | <img src="./images/user/login.png" width="220" alt="Login"> |
+| **Registro** | Creación de nueva cuenta con validación de contraseña      | <img src="./images/user/signup.png" width="220" alt="Singup"> |
+| **Inicio (Home)** | Vista de suscripciones activas y gimnasios descubiertos    | <img src="./images/user/home.png" width="220" alt="User Home"> |
+| **Detalle de gimnasio** | Información completa, estado de apertura y aforo actual    | <img src="./images/user/gym_detail.png" width="220" alt="User Gym Detail"> |
+| **Mi código QR** | Código personal para escaneo en acceso a gimnasios         | <img src="./images/user/qr_code.png" width="220" alt="QR Code"> |
+| **Perfil de usuario** | Datos personales, foto de perfil y estado de suscripciones | <img src="./images/user/profile.png" width="220" alt="User Profile"> |
+| **Editar perfil** | Actualización de nombre, username y avatar                 | <img src="./images/user/edit_profile.png" width="220" alt="Edit Profile"> |
+| **Historial de actividad** | Registro cronológico de accesos a gimnasios                | <img src="./images/user/activity_history.png" width="220" alt="Activity History"> |
 
 ### 🏢 Usuario enterprise (propietario de gimnasio)
 
-| Pantalla | Descripción                                                       | Ruta de imagen sugerida                                   |
+| Pantalla | Descripción                                                       | Imagen                                                    |
 |----------|-------------------------------------------------------------------|-----------------------------------------------------------|
-| **Inicio enterprise** | Panel con el listado de sedes gestionadas                         | ![Enterprise Home](./images/enterprise/home.png)          |
-| **Crear nueva sede** | Formulario para registrar un nuevo gimnasio con imagen y datos    | ![Create Gym](./images/enterprise/create_gym.png)         |
-| **Editar sede** | Modificación de datos, capacidad y estado de una sede existente   | ![Edit Gym](./images/enterprise/edit_gym.png)             |
-| **Gestionar socios** | Listado de miembros vinculados y opción para añadir nuevos        | ![Manage Members](./images/enterprise/manage_members.png) |
-| **Escáner QR** | Vista de cámara para validar accesos de socios en tiempo real     | ![Scanner](./images/enterprise/scanner.png)               |
-| **Detalle de sede** | Vista completa con aforo actual, controles de apertura y métricas | ![Gym Details](./images/enterprise/gym_details.png)       |
-| **Perfil enterprise** | Datos de la cuenta empresarial y configuración                    | ![Enterprise Profile](./images/enterprise/profile.png)    |
+| **Inicio enterprise** | Panel con el listado de sedes gestionadas                         | <img src="./images/enterprise/home.png" width="220" alt="Enterprise Home"> |
+| **Crear nueva sede** | Formulario para registrar un nuevo gimnasio con imagen y datos    | <img src="./images/enterprise/create_gym.png" width="220" alt="Create Gym"> |
+| **Editar sede** | Modificación de datos, capacidad y estado de una sede existente   | <img src="./images/enterprise/edit_gym.png" width="220" alt="Edit Gym"> |
+| **Gestionar socios** | Listado de miembros vinculados y opción para añadir nuevos        | <img src="./images/enterprise/manage_members.png" width="220" alt="Manage Members"> |
+| **Escáner QR** | Vista de cámara para validar accesos de socios en tiempo real     | <img src="./images/enterprise/scanner.png" width="220" alt="Scanner"> |
+| **Detalle de sede** | Vista completa con aforo actual, controles de apertura y métricas | <img src="./images/enterprise/gym_details.png" width="220" alt="Gym Details"> |
+| **Perfil enterprise** | Datos de la cuenta empresarial y configuración                    | <img src="./images/enterprise/profile.png" width="220" alt="Enterprise Profile"> |
 
 ## ✨ Funcionalidades principales
 
