@@ -84,7 +84,7 @@ fun QRScreen(authViewModel: AuthViewModel) {
                     contentScale = ContentScale.Fit,
                     colorFilter = if (isDarkMode) {
                         ColorFilter.tint(
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = com.gymrats.gymratsapp.ui.theme.White,
                             blendMode = BlendMode.Difference
                         )
                     } else {
