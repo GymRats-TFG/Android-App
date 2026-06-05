@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.data.RefreshRequest
 import com.gymrats.gymratsapp.data.SessionManager
 import com.gymrats.gymratsapp.data.SignupRequest
@@ -42,6 +43,7 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
         success = false
         errorMessage = null
         isEnterprise = null
+        val appContext = getApplication<Application>()
         viewModelScope.launch {
             try {
                 // Llamamos directamente con los parámetros @Field
@@ -63,11 +65,17 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                         success = true
                     }
                 } else {
-                    errorMessage =
-                        "Error en login: ${response.code()} - ${response.errorBody()?.string()}"
+                    val errorBody = response.errorBody()?.string()
+
+                    errorMessage = when (response.code()) {
+                        401 -> appContext.getString(R.string.wrong_email_pass)
+                        404 -> appContext.getString(R.string.user_does_not_exist)
+                        500 -> appContext.getString(R.string.server_error)
+                        else -> { appContext.getString(R.string.unexpected_error)+" (${response.code()})" }
+                    }
                 }
             } catch (e: Exception) {
-                errorMessage = "Error de red: ${e.message}"
+                errorMessage = appContext.getString(R.string.network_error)+": ${e.message}"
             }
         }
     }
@@ -76,6 +84,7 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
         success = false
         errorMessage = null
         this@AuthViewModel.isEnterprise = null
+        val appContext = getApplication<Application>()
         viewModelScope.launch {
             try {
                 val registro = SignupRequest(email, username, pass, isEnterprise)
@@ -96,10 +105,10 @@ class AuthViewModel(application: Application, private val sessionManager: Sessio
                         success = true
                     }
                 } else {
-                    errorMessage = "Error en registro: Usuario existente o datos inválidos"
+                    errorMessage = appContext.getString(R.string.signup_error)
                 }
             } catch (e: Exception) {
-                errorMessage = "Error de red: ${e.message}"
+                errorMessage = appContext.getString(R.string.network_error)+": ${e.message}"
             }
         }
     }

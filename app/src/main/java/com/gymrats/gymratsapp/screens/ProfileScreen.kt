@@ -242,7 +242,11 @@ fun ProfileScreen(
                         SectionTitle(
                             title = stringResource(R.string.recent_activity),
                             showVerTodo = true,
-                            onClick = onSeeAllActivity
+                            onClick = {
+                                if (!authViewModel.isLoading) {
+                                    onSeeAllActivity()
+                                }
+                            }
                         )
                     }
 

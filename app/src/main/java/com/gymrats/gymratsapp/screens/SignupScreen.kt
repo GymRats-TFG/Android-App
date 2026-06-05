@@ -35,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -77,9 +78,15 @@ fun SignupScreen(
     // Para evitar realizar más de una vez la misma llamada
     var isLoading by remember { mutableStateOf(false) }
 
+    // Limpiamos variables cuando se destruye la pantalla
+    DisposableEffect(Unit) {
+        onDispose { authViewModel.clearState() }
+    }
+
     BackHandler {
         // Navegar de vuelta a la pantalla de login
         // al presionar el botón de retroceso del dispositivo
+        authViewModel.clearState()
         onBackToLogin()
     }
 
@@ -88,6 +95,7 @@ fun SignupScreen(
         authViewModel.errorMessage?.let { mensaje ->
             Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
         }
+        authViewModel.clearState()
         isLoading = false
     }
 
@@ -120,7 +128,10 @@ fun SignupScreen(
                     isEnterprise = true
                     showEnterpriseDialog = false
                 }) {
-                    Text(stringResource(R.string.confirm), color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        stringResource(R.string.confirm),
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             },
             dismissButton = {
@@ -292,7 +303,12 @@ fun SignupScreen(
                         if (!isLoading) {
                             if (password == confirmPassword && email.isNotEmpty() && username.isNotEmpty()) {
                                 isLoading = true
-                                authViewModel.ejecutarSignup(email, username, password, isEnterprise)
+                                authViewModel.ejecutarSignup(
+                                    email,
+                                    username,
+                                    password,
+                                    isEnterprise
+                                )
                             } else {
                                 val msg = if (password != confirmPassword) getString(
                                     context,

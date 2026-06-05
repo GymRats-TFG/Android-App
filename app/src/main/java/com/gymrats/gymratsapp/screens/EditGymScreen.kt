@@ -267,8 +267,19 @@ fun EditGymScreen(
                             Toast.LENGTH_SHORT
                         ).show()
                         onSuccess()
-                    }.onFailure {
-                        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    }.onFailure { exception ->
+                        val errorMsg = exception.message ?: ""
+                        val friendlyError = when {
+                            errorMsg.contains("email", ignoreCase = true) -> {
+                                getString(context,R.string.error_email)
+                            }
+                            errorMsg.contains("body", ignoreCase = true) -> {
+                                getString(context,R.string.error_fields)
+                            }
+                            else -> errorMsg
+                        }
+
+                        Toast.makeText(context, friendlyError, Toast.LENGTH_LONG).show()
                     }
                 }
             },

@@ -161,4 +161,12 @@
     <!--  SubscriptionsDetailedCard  -->
     <string name="start">INICIO</string>
     <string name="end">FIN</string>
+
+    <!--  AuthViewModel  -->
+    <string name="wrong_email_pass">Correo o contraseña incorrectos</string>
+    <string name="user_does_not_exist">El usuario no existe</string>
+    <string name="server_error">Error en el servidor, inténtalo más tarde</string>
+    <string name="unexpected_error">Error inesperado</string>
+    <string name="network_error">Error de red</string>
+    <string name="signup_error">Usuario existente o datos inválidos</string>
 </resources>

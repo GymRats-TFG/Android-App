@@ -191,6 +191,7 @@ fun LoginScreen(onGoToSignup: () -> Unit, onLogin: () -> Unit, authViewModel: Au
                         fontFamily = FontFamily(Font(R.font.poppins_semibold)),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {
+                            authViewModel.clearState()
                             onGoToSignup()
                         }
                     )

@@ -159,4 +159,12 @@
     <!--  SubscriptionsDetailedCard  -->
     <string name="start">START</string>
     <string name="end">END</string>
+
+    <!--  AuthViewModel  -->
+    <string name="wrong_email_pass">Incorrect email or password</string>
+    <string name="user_does_not_exist">User does not exist</string>
+    <string name="server_error">Server error, please try again later</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="network_error">Network error</string>
+    <string name="signup_error">User already exists or invalid data</string>
 </resources>

@@ -185,25 +185,25 @@ fun ScannerScreen(gymViewModel: GymViewModel) {
                         color = if (result.success) Color(0xFF2E7D32) else Color(0xFFC62828),
                         shape = RoundedCornerShape(20.dp),
                         shadowElevation = 10.dp,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(bottom=18.dp)
                     ) {
                         Column(
                             modifier = Modifier.padding(20.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = if (result.success) stringResource(R.string.access_granted)
-                                else stringResource(R.string.access_denied),
-                                color = Color.White,
-                                fontFamily = poppinsBold,
-                                fontSize = 18.sp
-                            )
-                            Spacer(Modifier.height(4.dp))
+//                            Text(
+//                                text = if (result.success) stringResource(R.string.access_granted)
+//                                else stringResource(R.string.access_denied),
+//                                color = Color.White,
+//                                fontFamily = poppinsBold,
+//                                fontSize = 18.sp
+//                            )
+//                            Spacer(Modifier.height(4.dp))
                             Text(
                                 text = result.message,
                                 color = Color.White.copy(alpha = 0.9f),
-                                fontSize = 14.sp,
-                                fontFamily = poppinsRegular
+                                fontSize = 18.sp,
+                                fontFamily = poppinsSemiBold
                             )
                             if (result.user_name != null) {
                                 Spacer(Modifier.height(8.dp))

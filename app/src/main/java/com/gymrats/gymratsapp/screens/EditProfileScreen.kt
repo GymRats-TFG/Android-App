@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import coil3.compose.AsyncImage
 import com.gymrats.gymratsapp.R
 import com.gymrats.gymratsapp.viewModels.AuthViewModel
@@ -157,7 +158,18 @@ fun EditProfileScreen(
                             Toast.makeText(context, context.getString(R.string.toast_profile_updated), Toast.LENGTH_SHORT).show()
                             onSaveChangesClick()
                         }.onFailure { error ->
-                            Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+                            val errorMsg = error.message ?: ""
+
+                            // Extraemos el mensaje si viene en formato JSON con "detail"
+                            val friendlyError = when {
+                                // Extraemos solo el texto de detail
+                                errorMsg.contains("\"detail\":") -> {
+                                    errorMsg.substringAfter("\"detail\":\"").substringBefore("\"")
+                                }
+                                else -> errorMsg
+                            }
+
+                            Toast.makeText(context, friendlyError, Toast.LENGTH_LONG).show()
                         }
                     }
                 },
