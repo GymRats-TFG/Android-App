@@ -30,16 +30,7 @@ fun QRScannerView(
     var isPaused by remember { mutableStateOf(false) }
 
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_PAUSE || event == Lifecycle.Event.ON_STOP) {
-                try {
-                    cameraProviderFuture.get().unbindAll()
-                } catch (e: Exception) { e.printStackTrace() }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
             try {
                 cameraProviderFuture.get().unbindAll()
             } catch (e: Exception) { e.printStackTrace() }
@@ -49,7 +40,7 @@ fun QRScannerView(
     AndroidView(
         factory = { ctx ->
             PreviewView(ctx).apply {
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                implementationMode = PreviewView.ImplementationMode.PERFORMANCE
             }
         },
         modifier = Modifier.fillMaxSize(),
@@ -98,14 +89,12 @@ fun QRScannerView(
 
                 try {
                     cameraProvider.unbindAll()
-                    if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                        cameraProvider.bindToLifecycle(
-                            lifecycleOwner,
-                            cameraSelector,
-                            preview,
-                            imageAnalysis
-                        )
-                    }
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageAnalysis
+                    )
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
